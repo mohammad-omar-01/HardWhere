@@ -1,5 +1,5 @@
 ﻿using Application.DTOs;
-using Application.Services;
+using Application.Services.Authintication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,6 +49,7 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpPost("Logout")]
+        [Authorize]
         public IActionResult Logout([FromBody] LogoutRequestDTO logoutRequest)
         {
             var response = _userAuthicticateService.Logout(logoutRequest);
