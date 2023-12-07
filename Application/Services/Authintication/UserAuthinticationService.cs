@@ -4,7 +4,7 @@ using Application.Utilities;
 using Domain.User;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Application.Services
+namespace Application.Services.Authintication
 {
     public class UserAuthinticationService : IUserAuthicticateService
     {
@@ -18,9 +18,9 @@ namespace Application.Services
             ITokenUtility tokenUtility
         )
         {
-            this._userRepository = userRepository;
-            this._stringUtility = stringUtility;
-            this._tokenUtility = tokenUtility;
+            _userRepository = userRepository;
+            _stringUtility = stringUtility;
+            _tokenUtility = tokenUtility;
         }
 
         public bool IsEmailAvaliable(string Email)

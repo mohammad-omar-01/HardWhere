@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Application.Utilities
@@ -26,11 +27,7 @@ namespace Application.Utilities
             var audience = _configuration["Authentication:Audience"];
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(secretKey);
-            var claimsForToken = new List<Claim>();
-            claimsForToken.Add(new Claim("UserID", user.Id.ToString()));
-            claimsForToken.Add(new Claim("UserName", user.UserName));
-            claimsForToken.Add(new Claim("Role", user.Role.ToString()));
+            var key = Encoding.UTF8.GetBytes(secretKey);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -46,7 +43,7 @@ namespace Application.Utilities
                 Audience = audience,
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature
+                    SecurityAlgorithms.HmacSha512
                 )
             };
 

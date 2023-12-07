@@ -26,6 +26,11 @@ namespace Application.Utilities
             }
         }
 
+        public string? NicenName(string? fName, string? lName)
+        {
+            return fName + " " + lName;
+        }
+
         public bool VerifyEquailityForTwoPasswords(string str1, string str2)
         {
             string hashedInputPassword = HashString(str2);
