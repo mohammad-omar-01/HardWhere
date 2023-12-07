@@ -2,7 +2,7 @@
 using Domain.User;
 using System.Security.Cryptography;
 
-namespace Application.Services
+namespace Application.Services.Authintication
 {
     public interface IUserAuthicticateService
     {
