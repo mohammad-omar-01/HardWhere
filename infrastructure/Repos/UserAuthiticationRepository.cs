@@ -3,7 +3,7 @@ using Application.Repositories;
 using AutoMapper;
 using Domain.User;
 
-namespace infrastructure
+namespace infrastructure.Repos
 {
     public class UserAuthiticationRepository : IUserAuthinticationRepoisitory
     {
