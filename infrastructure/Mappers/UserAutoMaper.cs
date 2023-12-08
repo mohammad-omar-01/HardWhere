@@ -3,6 +3,8 @@ using AutoMapper;
 using Domain.UserType;
 using Domain.User;
 using Application.DTOs.UserType;
+using Domain.Product;
+using Application.DTOs.image;
 
 namespace Application.Mappers
 {
@@ -16,6 +18,12 @@ namespace Application.Mappers
             CreateMap<CustomerDTO, User>();
             CreateMap<User, ViewerDTO>();
             CreateMap<ViewerDTO, User>();
+            CreateMap<CategoeryDTO, ProductCategory>();
+            CreateMap<ProductCategory, CategoeryDTO>()
+                .ForMember(dest => dest.databaseId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.image, opt => opt.MapFrom(src => src.CategoryImage));
+            CreateMap<CategoreyImage, CategoeryImageDTO>();
+            CreateMap<CategoeryImageDTO, CategoreyImage>();
         }
     }
 }

@@ -2,6 +2,7 @@
 using Application.Mappers;
 using Application.Repositories;
 using Application.Services.Authintication;
+using Application.Services.Categoery;
 using Application.Services.Payment;
 using Application.Services.UserInformation;
 using Application.Utilities;
@@ -53,6 +54,8 @@ builder.Services.AddScoped<IPaymentGateWayService, PaymentGateWayService>();
 builder.Services.AddScoped<IPaymentRepository, PaymentGateWayRepository>();
 builder.Services.AddScoped<IUserInformationRepository, UserInformationRepository>();
 builder.Services.AddScoped<IUserInformationService<UserTypeDTO>, UserTypeInformationService>();
+builder.Services.AddScoped<ICategoeryRepository, CateogeryRepository>();
+builder.Services.AddScoped<ICategoeryService, CategoeryService>();
 
 builder.Services
     .AddAuthentication(options =>
