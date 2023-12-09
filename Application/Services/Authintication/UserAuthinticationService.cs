@@ -1,7 +1,9 @@
 ﻿using Application.DTOs;
 using Application.Repositories;
 using Application.Utilities;
+using AutoMapper;
 using Domain.User;
+using Domain.UserType;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Application.Services.Authintication
@@ -11,6 +13,7 @@ namespace Application.Services.Authintication
         private readonly IUserAuthinticationRepoisitory _userRepository;
         private readonly IStringUtility _stringUtility;
         private readonly ITokenUtility _tokenUtility;
+        private static IMapper _mapper;
 
         public UserAuthinticationService(
             IUserAuthinticationRepoisitory userRepository,
@@ -40,7 +43,17 @@ namespace Application.Services.Authintication
             return false;
         }
 
-        public string? Login(UserSignInDTO _user)
+        public static IMapper GetMapper()
+        {
+            if (_mapper == null)
+            {
+                _mapper = ServiceMapper.Configure();
+            }
+
+            return _mapper;
+        }
+
+        public LoginResult? Login(UserSignInDTO _user)
         {
             var user = _userRepository.GetUserByUserName(_user.UserName);
 
@@ -52,7 +65,9 @@ namespace Application.Services.Authintication
                 var token = _tokenUtility.GenerateJwtToken(user);
                 user.Token = token;
                 _userRepository.UpdateUser(user);
-                return token;
+                var mapper = GetMapper();
+                var destination = mapper.Map<CustomerDTO>(user);
+                return new LoginResult { Token = token, AccountDetails = destination };
             }
 
             return null;

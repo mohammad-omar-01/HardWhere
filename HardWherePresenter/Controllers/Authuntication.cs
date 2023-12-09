@@ -2,6 +2,9 @@
 using Application.Services.Authintication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Text;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -21,8 +24,8 @@ namespace HardWherePresenter.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] UserSignInDTO loginRequest)
         {
-            var token = _userAuthicticateService.Login(loginRequest);
-            if (token == null)
+            var loginResult = _userAuthicticateService.Login(loginRequest);
+            if (loginResult.Token == null)
             {
                 return BadRequest();
             }
@@ -32,9 +35,11 @@ namespace HardWherePresenter.Controllers
                 SameSite = SameSiteMode.Strict,
             };
 
-            Response.Cookies.Append("Authorization", token, cookieOptions);
+            Response.Cookies.Append("Authorization", loginResult.Token, cookieOptions);
 
-            return Ok(new { Status = "Success" });
+            var reponse = new { Status = "Success", AccountDeatils = loginResult.AccountDetails };
+            var json = JsonConvert.SerializeObject(reponse);
+            return Content(json, "application/json", Encoding.UTF8);
         }
 
         [HttpPost("Signup")]

@@ -8,7 +8,7 @@ namespace Application.Services.Authintication
     {
         public bool IsUsernameAvaliable(string username);
         public bool IsEmailAvaliable(string email);
-        public string? Login(UserSignInDTO user);
+        public LoginResult? Login(UserSignInDTO user);
         public bool Logout(LogoutRequestDTO logoutRequest);
         public bool SignUp(UserSignUpDTO user);
     }
