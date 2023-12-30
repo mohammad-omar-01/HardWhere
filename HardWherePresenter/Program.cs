@@ -1,16 +1,23 @@
-﻿using Application.DTOs.UserType;
+﻿using Application;
+using Application.DTOs.Product;
+using Application.DTOsNS.UserType;
 using Application.Mappers;
 using Application.Repositories;
 using Application.Services.Authintication;
 using Application.Services.Categoery;
 using Application.Services.Payment;
+using Application.Services.ProductServiceNS;
 using Application.Services.UserInformation;
 using Application.Utilities;
+using Domain.ProductNS;
+using FluentAssertions.Common;
+using HardWhere.Application.Product.Validators;
 using infrastructure;
 using infrastructure.Repos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Cryptography;
 using System.Text;
@@ -46,6 +53,7 @@ builder.Services.AddCors(options =>
 });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddTransient<ProductValidator>();
 builder.Services.AddScoped<IUserAuthicticateService, UserAuthinticationService>();
 builder.Services.AddScoped<IUserAuthinticationRepoisitory, UserAuthiticationRepository>();
 builder.Services.AddScoped<ITokenUtility, TokensUtilitiy>();
@@ -56,7 +64,11 @@ builder.Services.AddScoped<IUserInformationRepository, UserInformationRepository
 builder.Services.AddScoped<IUserInformationService<UserTypeDTO>, UserTypeInformationService>();
 builder.Services.AddScoped<ICategoeryRepository, CateogeryRepository>();
 builder.Services.AddScoped<ICategoeryService, CategoeryService>();
-
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.AddTransient<IStringRandomGenarotor<SKUGenerator>, SKUGenerator>();
+builder.Services.AddTransient<IStringRandomGenarotor<SlugGenerator>, SlugGenerator>();
 builder.Services
     .AddAuthentication(options =>
     {
@@ -118,6 +130,15 @@ app.UseCors("MyPolicy");
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseStaticFiles(
+    new StaticFileOptions()
+    {
+        FileProvider = new PhysicalFileProvider(
+            Path.Combine(Directory.GetCurrentDirectory(), @"Uploads")
+        ),
+        RequestPath = new PathString("/images")
+    }
+);
 
 app.MapControllers();
 

@@ -1,4 +1,4 @@
-﻿namespace Domain.User
+﻿namespace Domain.UserNS
 {
     public enum UserRole
     {

@@ -35,7 +35,7 @@ namespace infrastructure.Migrations
                     b.ToTable("PaymentGateWays");
                 });
 
-            modelBuilder.Entity("Domain.Product.CategoreyImage", b =>
+            modelBuilder.Entity("Domain.ProductNS.CategoreyImage", b =>
                 {
                     b.Property<string>("id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +61,106 @@ namespace infrastructure.Migrations
                     b.ToTable("CategoreyImages");
                 });
 
-            modelBuilder.Entity("Domain.Product.ProductCategory", b =>
+            modelBuilder.Entity("Domain.ProductNS.GalleryImage", b =>
+                {
+                    b.Property<int>("GalleryImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GalleryImageId"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SourceUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("GalleryImageId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("GalleryImages");
+                });
+
+            modelBuilder.Entity("Domain.ProductNS.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ProductId"));
+
+                    b.Property<decimal?>("AverageRating")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("DateAdded")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("OnSale")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Price")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RawDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("RawPrice")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SalePrice")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ShortDescription")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sku")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StockQuantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("StockStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Domain.ProductNS.ProductCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -85,7 +184,30 @@ namespace infrastructure.Migrations
                     b.ToTable("ProductCategories");
                 });
 
-            modelBuilder.Entity("Domain.User.Address", b =>
+            modelBuilder.Entity("Domain.ProductNS.ProductImage", b =>
+                {
+                    b.Property<int>("ImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ImageId"));
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SourceUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ImageId");
+
+                    b.HasIndex("ProductId")
+                        .IsUnique();
+
+                    b.ToTable("ProductImage");
+                });
+
+            modelBuilder.Entity("Domain.UserNS.Address", b =>
                 {
                     b.Property<int>("AddressID")
                         .ValueGeneratedOnAdd()
@@ -141,7 +263,7 @@ namespace infrastructure.Migrations
                     b.ToTable("Address");
                 });
 
-            modelBuilder.Entity("Domain.User.User", b =>
+            modelBuilder.Entity("Domain.UserNS.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -188,24 +310,69 @@ namespace infrastructure.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Domain.Product.CategoreyImage", b =>
+            modelBuilder.Entity("ProductProductCategory", b =>
                 {
-                    b.HasOne("Domain.Product.ProductCategory", "category")
+                    b.Property<int>("CategoriesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoriesId", "ProductsProductId");
+
+                    b.HasIndex("ProductsProductId");
+
+                    b.ToTable("ProductProductCategory");
+                });
+
+            modelBuilder.Entity("Domain.ProductNS.CategoreyImage", b =>
+                {
+                    b.HasOne("Domain.ProductNS.ProductCategory", "category")
                         .WithOne("CategoryImage")
-                        .HasForeignKey("Domain.Product.CategoreyImage", "CategoreyId")
+                        .HasForeignKey("Domain.ProductNS.CategoreyImage", "CategoreyId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("category");
                 });
 
-            modelBuilder.Entity("Domain.User.User", b =>
+            modelBuilder.Entity("Domain.ProductNS.GalleryImage", b =>
                 {
-                    b.HasOne("Domain.User.Address", "Billing")
+                    b.HasOne("Domain.ProductNS.Product", "Product")
+                        .WithMany("GalleryImages")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Domain.ProductNS.Product", b =>
+                {
+                    b.HasOne("Domain.UserNS.User", null)
+                        .WithMany("Products")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.SetNull);
+                });
+
+            modelBuilder.Entity("Domain.ProductNS.ProductImage", b =>
+                {
+                    b.HasOne("Domain.ProductNS.Product", "Product")
+                        .WithOne("ProductImage")
+                        .HasForeignKey("Domain.ProductNS.ProductImage", "ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("Domain.UserNS.User", b =>
+                {
+                    b.HasOne("Domain.UserNS.Address", "Billing")
                         .WithMany()
                         .HasForeignKey("BillingAddressID");
 
-                    b.HasOne("Domain.User.Address", "Shipping")
+                    b.HasOne("Domain.UserNS.Address", "Shipping")
                         .WithMany()
                         .HasForeignKey("ShippingAddressID");
 
@@ -214,10 +381,37 @@ namespace infrastructure.Migrations
                     b.Navigation("Shipping");
                 });
 
-            modelBuilder.Entity("Domain.Product.ProductCategory", b =>
+            modelBuilder.Entity("ProductProductCategory", b =>
+                {
+                    b.HasOne("Domain.ProductNS.ProductCategory", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.ProductNS.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.ProductNS.Product", b =>
+                {
+                    b.Navigation("GalleryImages");
+
+                    b.Navigation("ProductImage");
+                });
+
+            modelBuilder.Entity("Domain.ProductNS.ProductCategory", b =>
                 {
                     b.Navigation("CategoryImage")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Domain.UserNS.User", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

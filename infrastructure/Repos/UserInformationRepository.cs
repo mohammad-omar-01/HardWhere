@@ -1,4 +1,4 @@
-﻿using Application.DTOs.UserType;
+﻿using Application.DTOsNS.UserType;
 using Application.Repositories;
 using Application.Utilities;
 using AutoMapper;

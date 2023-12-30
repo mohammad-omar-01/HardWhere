@@ -1,7 +1,7 @@
-﻿using Application.DTOs;
+﻿using Application.DTOsNS;
 using Application.Repositories;
 using AutoMapper;
-using Domain.User;
+using Domain.UserNS;
 
 namespace infrastructure.Repos
 {

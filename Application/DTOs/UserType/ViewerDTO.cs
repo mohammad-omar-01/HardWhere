@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.UserType
+﻿namespace Application.DTOsNS.UserType
 {
     public class ViewerDTO : UserTypeDTO
     {

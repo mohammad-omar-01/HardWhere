@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs
+﻿namespace Application.DTOsNS
 {
     public class UserInfoRequestDTO
     {

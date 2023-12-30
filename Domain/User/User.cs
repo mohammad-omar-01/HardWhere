@@ -1,7 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.ProductNS;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.User
+namespace Domain.UserNS
 {
     public class User
     {
@@ -17,5 +18,6 @@ namespace Domain.User
         public string? Token { get; set; }
         public Address? Billing { get; set; }
         public Address? Shipping { get; set; }
+        public List<Product>? Products { get; set; }
     }
 }

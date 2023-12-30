@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Product;
+using Application.DTOsNS;
 using Application.Repositories;
 using Application.Services.Categoery;
 using Domain.Payment;
@@ -27,6 +28,21 @@ namespace HardWherePresenter.Controllers
             var list = await _categoeryService.GetCategories();
             var json = JsonConvert.SerializeObject(list);
             return Content(json, "application/json", Encoding.UTF8);
+        }
+
+        [HttpGet("slug/{slugName}")]
+        public async Task<ActionResult<CategoeryDTO>> GetCategoeryBySlug(
+            [FromRoute] string slugName
+        )
+        {
+            var response = await _categoeryService.GetCategoryBySlugNameAsync(slugName);
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore}
+            );
+
+            return Ok(json);
         }
     }
 }

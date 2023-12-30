@@ -1,5 +1,5 @@
-﻿using Application.DTOs;
-using Domain.User;
+﻿using Application.DTOsNS;
+using Domain.UserNS;
 
 namespace Application.Repositories
 {

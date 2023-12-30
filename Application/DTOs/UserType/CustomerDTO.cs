@@ -1,5 +1,5 @@
-﻿using Application.DTOs.UserType;
-using Domain.User;
+﻿using Application.DTOsNS.UserType;
+using Domain.UserNS;
 
 namespace Domain.UserType
 {

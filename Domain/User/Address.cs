@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using static Domain.Enums.CounteryEnum;
 
-namespace Domain.User
+namespace Domain.UserNS
 {
     public class Address
     {

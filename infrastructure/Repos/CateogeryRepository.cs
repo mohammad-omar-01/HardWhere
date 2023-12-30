@@ -1,8 +1,9 @@
-﻿using Application.DTOs;
-using Application.DTOs.image;
+﻿using Application.DTOs.Product;
+using Application.DTOsNS;
+using Application.DTOsNS.image;
 using Application.Repositories;
 using AutoMapper;
-using Domain.Product;
+using Domain.ProductNS;
 using Microsoft.EntityFrameworkCore;
 
 namespace infrastructure.Repos
@@ -35,6 +36,32 @@ namespace infrastructure.Repos
                 categoryDTO.image = _mapper.Map<CategoeryImageDTO>(categoryDTO.image);
             }
             return catDTOs;
+        }
+
+        public async Task<CategoeryDTO> GetCategoryBySlugNameAsync(string slug)
+        {
+            try
+            {
+                var category = await _dbContext.ProductCategories
+                    .AsNoTracking()
+                    .Include(p => p.Products)
+                    .Include(p => p.CategoryImage)
+                    .FirstOrDefaultAsync(p => p.Slug == slug);
+
+                if (category == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return _mapper.Map<CategoeryDTO>(category);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
         }
     }
 }

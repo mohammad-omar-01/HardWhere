@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Product
+namespace Domain.ProductNS
 {
     public class ProductCategory
     {
@@ -12,5 +12,7 @@ namespace Domain.Product
         public string Name { get; set; }
         public int Count { get; set; }
         public CategoreyImage CategoryImage { get; set; }
+
+        public List<Product>? Products { get; set; }
     }
 }

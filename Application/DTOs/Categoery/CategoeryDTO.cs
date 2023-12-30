@@ -1,7 +1,6 @@
-﻿using Application.DTOs.image;
-using Domain.Product;
+﻿using Application.DTOsNS.image;
 
-namespace Application.DTOs
+namespace Application.DTOsNS
 {
     public class CategoeryDTO
     {
