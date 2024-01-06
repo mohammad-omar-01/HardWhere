@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace Application.DTOs.Product
+namespace Application.DTOs.ProductDTO
 {
     public interface IFileService
     {

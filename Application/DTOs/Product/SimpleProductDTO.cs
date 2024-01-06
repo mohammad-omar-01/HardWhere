@@ -4,7 +4,7 @@ using Domain.ProductNS;
 using static System.Net.Mime.MediaTypeNames;
 using System.Reflection.Emit;
 
-namespace Application.DTOs.Product
+namespace Application.DTOs.ProductDTO
 {
     public class SimpleProductDTO
     {
@@ -25,21 +25,21 @@ namespace Application.DTOs.Product
         private int _rawPrice;
         public string price
         {
-            get { return string.Format("€{0:N2}", _rawPrice); }
+            get { return string.Format("₪{0:N2}", _rawPrice); }
             set { _rawPrice = int.Parse(value); }
         }
 
         private int _rawRegularPrice;
         public string rawPrice
         {
-            get { return string.Format("€{0:N2}", _rawRegularPrice); }
+            get { return string.Format("₪{0:N2}", _rawRegularPrice); }
             set { _rawRegularPrice = int.Parse(value); }
         }
 
         private int _rawSalePrice;
         public string SalePrice
         {
-            get { return string.Format("€{0:N2}", _rawSalePrice); }
+            get { return string.Format("₪{0:N2}", _rawSalePrice); }
             set
             {
                 int num;

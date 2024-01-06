@@ -1,16 +1,15 @@
-﻿using Application;
-using Application.DTOs.Product;
+﻿using Application.DTOs.ProductDTO;
 using Application.DTOsNS.UserType;
 using Application.Mappers;
 using Application.Repositories;
+using Application.Services;
 using Application.Services.Authintication;
+using Application.Services.CartNS;
 using Application.Services.Categoery;
 using Application.Services.Payment;
 using Application.Services.ProductServiceNS;
 using Application.Services.UserInformation;
 using Application.Utilities;
-using Domain.ProductNS;
-using FluentAssertions.Common;
 using HardWhere.Application.Product.Validators;
 using infrastructure;
 using infrastructure.Repos;
@@ -66,7 +65,10 @@ builder.Services.AddScoped<ICategoeryRepository, CateogeryRepository>();
 builder.Services.AddScoped<ICategoeryService, CategoeryService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddSingleton<IFileService, FileService>();
+builder.Services.AddScoped<ICartRepository, CartRepository>();
+builder.Services.AddScoped<ICartService, CartService>();
+
+builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddTransient<IStringRandomGenarotor<SKUGenerator>, SKUGenerator>();
 builder.Services.AddTransient<IStringRandomGenarotor<SlugGenerator>, SlugGenerator>();
 builder.Services
@@ -74,6 +76,7 @@ builder.Services
     {
         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
     })
     .AddJwtBearer(options =>
     {

@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Product;
+﻿using Application.DTOs.ProductDTO;
 using FluentValidation;
 
 namespace HardWhere.Application.Product.Validators;

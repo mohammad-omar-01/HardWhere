@@ -1,7 +1,7 @@
 ﻿using Domain.ProductNS;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.DTOs.Product
+namespace Application.DTOs.ProductDTO
 {
     public class NewProductRequestDTO
     {
@@ -10,7 +10,6 @@ namespace Application.DTOs.Product
         public IEnumerable<String> ProductCategory { get; set; }
         public string ProductShortDescription { get; set; }
         public string Price { get; set; }
-
         public int StockQuantity { get; set; }
         public int UserId { get; set; }
         public IFormFile MainImage { get; set; }

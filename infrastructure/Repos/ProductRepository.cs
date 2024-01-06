@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Product;
+﻿using Application.DTOs.ProductDTO;
 using Application.Repositories;
 using AutoMapper;
 using Domain.ProductNS;

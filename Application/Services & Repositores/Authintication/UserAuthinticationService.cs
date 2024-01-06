@@ -43,7 +43,10 @@ namespace Application.Services.Authintication
         public string? Login(UserSignInDTO _user)
         {
             var user = _userRepository.GetUserByUserName(_user.UserName);
-
+            if (user == null)
+            {
+                return null;
+            }
             if (
                 user.Password != null
                 && _stringUtility.VerifyEquailityForTwoPasswords(user.Password, _user.Password)

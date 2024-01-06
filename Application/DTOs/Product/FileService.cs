@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 
-namespace Application.DTOs.Product
+namespace Application.DTOs.ProductDTO
 {
     public class FileService : IFileService
     {

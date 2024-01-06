@@ -1,4 +1,4 @@
-﻿using Application.DTOs.Product;
+﻿using Application.DTOs.ProductDTO;
 using Application.DTOsNS;
 using Application.Repositories;
 using Application.Services.Categoery;
