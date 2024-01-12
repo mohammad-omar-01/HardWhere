@@ -1,4 +1,4 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Cart;
 using Application.Repositories;
 using Domain.CartNS;
 
@@ -99,7 +99,7 @@ namespace Application.Services.CartNS
                             {
                                 quantity = item.quantity,
                                 key = item.ProductId.ToString(),
-                                product = new ProductForCart
+                                product = new ProductRequestDTO
                                 {
                                     productId = item.ProductId,
                                     name = item.CartProductName,
@@ -108,7 +108,7 @@ namespace Application.Services.CartNS
                                     slug = "",
                                     productImage =
                                         item.ProductImage != null
-                                            ? new ProductCartImage { sourceUrl = item.ProductImage }
+                                            ? new ProductImageDTO { sourceUrl = item.ProductImage }
                                             : null
                                 },
                                 priceRegular = item.price.ToString(),

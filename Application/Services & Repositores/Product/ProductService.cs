@@ -35,6 +35,7 @@ namespace Application.Services.ProductServiceNS
             productToAdd.StockStatus = StockStatusEnum.IN_STOCK.ToString();
             productToAdd.Sku = _skuGenerator.GenrateRandomString(productToAdd);
             productToAdd.Slug = _slugGenerator.GenrateRandomString(productToAdd);
+            productToAdd.StockQuantity = 1;
             var productInDB = await _productRepository.AddProductAsync(productToAdd);
             var mainImagePath = _fileService.SaveImage(product.MainImage).Item2;
 
@@ -68,6 +69,29 @@ namespace Application.Services.ProductServiceNS
             return productWithAllAttrubiotes;
         }
 
+        public async Task<List<SimpleProductDTO>> GetAll()
+        {
+            var result = await _productRepository.GetAllProducts();
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
+        }
+
+        public async Task<List<SimpleProductDTO>> GetsimpleProductspaginated(
+            int pageNumber,
+            int pageSize
+        )
+        {
+            var result = await _productRepository.GetAllProductsPagination(pageNumber, pageSize);
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
+        }
+
         public async Task<SimpleProductDTO> GetSimpleProductById(int productId)
         {
             var response = await _productRepository.GetProductAsync(productId);
@@ -78,6 +102,16 @@ namespace Application.Services.ProductServiceNS
         {
             var response = await _productRepository.GetProductAsyncBySlugName(slugName);
             return response;
+        }
+
+        public async Task<List<SimpleProductDTO>> GetsimpleProductsInByUserId(int UserId)
+        {
+            var response = await _productRepository.GetProductsByUserId(UserId);
+            if (response == null)
+            {
+                return null;
+            }
+            return response.ToList();
         }
 
         public async Task<List<SimpleProductDTO>> GetsimpleProductsInCategoryAsync(int CategoeryId)

@@ -6,6 +6,10 @@ namespace Application.Repositories
     public interface IProductRepository
     {
         public Task<List<SimpleProductDTO>> GetProductsFromCategoryAsync(int CategoeryId);
+        public Task<List<SimpleProductDTO>> GetProductsByUserId(int UserId);
+        public Task<List<SimpleProductDTO>> GetAllProducts();
+        public Task<List<SimpleProductDTO>> GetAllProductsPagination(int pageNumber, int pageSize);
+
         public Task<SimpleProductDTO> GetProductAsync(int ProductId);
         public Task<SimpleProductDTO> GetProductAsyncBySlugName(string slugName);
 

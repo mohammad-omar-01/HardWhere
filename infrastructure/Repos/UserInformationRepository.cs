@@ -26,10 +26,7 @@ namespace infrastructure.Repos
 
         public async Task<CustomerDTO> GetCustomerInfo(string username)
         {
-            var user = await _dbContext.Users
-                .Include(a => a.Billing)
-                .Include(a => a.Shipping)
-                .FirstOrDefaultAsync(var => var.UserName == username);
+            var user = await _dbContext.Users.FirstOrDefaultAsync(var => var.UserName == username);
             return _mapper.Map<CustomerDTO>(user);
         }
 

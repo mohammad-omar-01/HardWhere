@@ -36,6 +36,33 @@ namespace HardWherePresenter.Controllers
             return Content(json, "application/json", Encoding.UTF8);
         }
 
+        [HttpGet("")]
+        public async Task<ActionResult<List<SimpleProductDTO>>> GetAll()
+        {
+            var response = await _productService.GetAll();
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Content(json, "application/json", Encoding.UTF8);
+        }
+
+        [HttpGet("Paginated")]
+        public async Task<ActionResult<List<SimpleProductDTO>>> GetProductsByPage(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 3
+        )
+        {
+            var response = await _productService.GetsimpleProductspaginated(pageNumber, pageSize);
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Content(json, "application/json", Encoding.UTF8);
+        }
+
         [HttpGet("{productId}")]
         public async Task<ActionResult<SimpleProductDTO>> GetProduct([FromRoute] int productId)
         {
@@ -49,13 +76,29 @@ namespace HardWherePresenter.Controllers
             return Ok(json);
         }
 
+        [HttpGet("User/{UserId}")]
+        public async Task<ActionResult<SimpleProductDTO>> GetProductByUserId([FromRoute] int UserId)
+        {
+            var response = await _productService.GetsimpleProductsInByUserId(UserId);
+            if (response == null)
+            {
+                return NoContent();
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Content(json, "application/json", Encoding.UTF8);
+        }
+
         [HttpGet("image")]
         public IActionResult Get()
         {
             Byte[] b = System.IO.File.ReadAllBytes(
                 @"C:\\Users\\mhamm\\Pictures\\Screenshots\\f.png"
             ); // You can use your own method over here.
-            return File(b, "image/jpeg");   
+            return File(b, "image/jpeg");
         }
 
         [HttpGet("slug/{slugName}")]

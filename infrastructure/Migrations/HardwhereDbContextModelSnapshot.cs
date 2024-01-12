@@ -74,11 +74,99 @@ namespace infrastructure.Migrations
                     b.Property<int>("quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CartId");
 
                     b.ToTable("CartContents");
+                });
+
+            modelBuilder.Entity("Domain.OrderNS.Order", b =>
+                {
+                    b.Property<int>("orderId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("orderId"));
+
+                    b.Property<int?>("BillingAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ShippingAdressId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("adminId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("customerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("orderDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("orderStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("shippingTotal")
+                        .HasColumnType("int");
+
+                    b.Property<int>("total")
+                        .HasColumnType("int");
+
+                    b.HasKey("orderId");
+
+                    b.HasIndex("BillingAddressId");
+
+                    b.HasIndex("ShippingAdressId");
+
+                    b.HasIndex("adminId");
+
+                    b.HasIndex("customerId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Domain.OrderNS.OrderContents", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("OrderProductName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProductImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("price")
+                        .HasColumnType("int");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
+
+                    b.Property<string>("slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("OrderContents");
                 });
 
             modelBuilder.Entity("Domain.Payment.PaymentGateWay", b =>
@@ -276,6 +364,10 @@ namespace infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("AddressName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("City")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -287,23 +379,7 @@ namespace infrastructure.Migrations
                     b.Property<int?>("Country")
                         .HasColumnType("int");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Phone")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Postcode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -311,9 +387,14 @@ namespace infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
                     b.HasKey("AddressID");
 
-                    b.ToTable("Address");
+                    b.HasIndex("userId");
+
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Domain.UserNS.User", b =>
@@ -323,9 +404,6 @@ namespace infrastructure.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("BillingAddressID")
-                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -344,9 +422,6 @@ namespace infrastructure.Migrations
                     b.Property<int>("Role")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ShippingAddressID")
-                        .HasColumnType("int");
-
                     b.Property<string>("Token")
                         .HasColumnType("nvarchar(max)");
 
@@ -355,10 +430,6 @@ namespace infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BillingAddressID");
-
-                    b.HasIndex("ShippingAddressID");
 
                     b.ToTable("Users");
                 });
@@ -387,6 +458,49 @@ namespace infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("cart");
+                });
+
+            modelBuilder.Entity("Domain.OrderNS.Order", b =>
+                {
+                    b.HasOne("Domain.UserNS.Address", "BillingAdress")
+                        .WithMany()
+                        .HasForeignKey("BillingAddressId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.UserNS.Address", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAdressId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.UserNS.User", "admin")
+                        .WithMany()
+                        .HasForeignKey("adminId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Domain.UserNS.User", "Customer")
+                        .WithMany()
+                        .HasForeignKey("customerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillingAdress");
+
+                    b.Navigation("Customer");
+
+                    b.Navigation("ShippingAddress");
+
+                    b.Navigation("admin");
+                });
+
+            modelBuilder.Entity("Domain.OrderNS.OrderContents", b =>
+                {
+                    b.HasOne("Domain.OrderNS.Order", "order")
+                        .WithMany("contentes")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("order");
                 });
 
             modelBuilder.Entity("Domain.ProductNS.CategoreyImage", b =>
@@ -430,19 +544,15 @@ namespace infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.UserNS.User", b =>
+            modelBuilder.Entity("Domain.UserNS.Address", b =>
                 {
-                    b.HasOne("Domain.UserNS.Address", "Billing")
+                    b.HasOne("Domain.UserNS.User", "user")
                         .WithMany()
-                        .HasForeignKey("BillingAddressID");
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasOne("Domain.UserNS.Address", "Shipping")
-                        .WithMany()
-                        .HasForeignKey("ShippingAddressID");
-
-                    b.Navigation("Billing");
-
-                    b.Navigation("Shipping");
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("ProductProductCategory", b =>
@@ -463,6 +573,11 @@ namespace infrastructure.Migrations
             modelBuilder.Entity("Domain.CartNS.Cart", b =>
                 {
                     b.Navigation("contents");
+                });
+
+            modelBuilder.Entity("Domain.OrderNS.Order", b =>
+                {
+                    b.Navigation("contentes");
                 });
 
             modelBuilder.Entity("Domain.ProductNS.Product", b =>

@@ -1,4 +1,4 @@
-﻿using Application.DTOsNS;
+﻿using Application.DTOs.User;
 using Application.DTOsNS.UserType;
 using Application.Repositories;
 using Domain.UserType;

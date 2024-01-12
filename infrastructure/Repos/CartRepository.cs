@@ -1,9 +1,6 @@
 ﻿using Application.Repositories;
-using AutoMapper;
 using Domain.CartNS;
-using Domain.ProductNS;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.AspNetCore.Hosting.Internal.HostingApplication;
 
 namespace infrastructure.Repos
 {

@@ -1,13 +1,12 @@
 ﻿using Domain.ProductNS;
 using Microsoft.AspNetCore.Http;
 
-namespace Application.DTOs
+namespace Application.DTOs.Cart
 {
     public class CartDTO
     {
         public string total { get; set; }
         public int userId { get; set; }
-        public int cartId { get; set; }
         public int? totalInt { get; set; }
         public bool? isEmpty { get; set; }
         public CartContents contents { get; set; }
@@ -17,7 +16,7 @@ namespace Application.DTOs
     {
         public int? itemCount { get; set; }
         public int? productCount { get; set; }
-        public List<CartItem> nodes { get; set; }
+        public List<CartItem>? nodes { get; set; }
     }
 
     public class CartItem
@@ -25,21 +24,21 @@ namespace Application.DTOs
         public int? quantity { get; set; }
         public string key { get; set; }
         public string priceRegular { get; set; } = string.Empty;
-        public ProductForCart product { get; set; }
+        public ProductRequestDTO product { get; set; }
         public int? totalPriceForTheseProducts { get; set; }
     }
 
-    public class ProductForCart
+    public class ProductRequestDTO
     {
         public int productId { get; set; }
         public string name { get; set; }
         public string slug { get; set; }
         public string price { get; set; }
         public string priceRegular { get; set; } = "0";
-        public ProductCartImage productImage { get; set; }
+        public ProductImageDTO productImage { get; set; }
     }
 
-    public class ProductCartImage
+    public class ProductImageDTO
     {
         public string sourceUrl { get; set; }
     }

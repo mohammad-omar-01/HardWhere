@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.ProductDTO;
+using Application.DTOs.User;
 using Application.DTOsNS;
 using Application.DTOsNS.image;
 using Application.DTOsNS.UserType;

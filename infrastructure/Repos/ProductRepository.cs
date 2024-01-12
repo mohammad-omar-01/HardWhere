@@ -71,6 +71,24 @@ namespace infrastructure.Repos
             return list;
         }
 
+        public async Task<List<SimpleProductDTO>> GetProductsByUserId(int UserId)
+        {
+            var productsForUser = await _dbContext.Products
+                .AsNoTracking()
+                .Include(p => p.GalleryImages)
+                .Include(p => p.Categories)
+                .Include(p => p.ProductImage)
+                .Where(p => p.UserID == UserId)
+                .ToListAsync();
+            if (productsForUser.Count == 0)
+            {
+                return null;
+            }
+            var list = _mapper.Map<List<SimpleProductDTO>>(productsForUser);
+
+            return list;
+        }
+
         public async Task<Product> UpdateProductAsync(Product product)
         {
             var productToUpdate = await _dbContext.Products.FirstOrDefaultAsync(
@@ -130,6 +148,49 @@ namespace infrastructure.Repos
                 Console.WriteLine(ex.Message);
                 return null;
             }
+        }
+
+        public async Task<List<SimpleProductDTO>> GetAllProducts()
+        {
+            try
+            {
+                var products = await _dbContext.Products
+                    .Include(p => p.GalleryImages)
+                    .Include(p => p.Categories)
+                    .Include(p => p.ProductImage)
+                    .ToListAsync();
+
+                if (products == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return _mapper.Map<List<SimpleProductDTO>>(products);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<SimpleProductDTO>> GetAllProductsPagination(
+            int pageNumber,
+            int pageSize
+        )
+        {
+            int recordsToSkip = (pageNumber - 1) * pageSize;
+
+            var paginatedProducts = await _dbContext.Products
+                .Include(p => p.Categories)
+                .OrderBy(b => b.ProductId)
+                .Skip(recordsToSkip)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return _mapper.Map<List<SimpleProductDTO>>(paginatedProducts);
         }
     }
 }

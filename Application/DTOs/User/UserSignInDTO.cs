@@ -1,4 +1,4 @@
-﻿namespace Application.DTOsNS
+﻿namespace Application.DTOs.User
 {
     public class UserSignInDTO
     {

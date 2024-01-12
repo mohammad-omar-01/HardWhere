@@ -1,15 +1,17 @@
-﻿using Application.DTOs;
-using Domain.CartNS;
+﻿using Domain.CartNS;
+using Domain.OrderNS;
 using Domain.Payment;
 using Domain.ProductNS;
 using Domain.UserNS;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace infrastructure
 {
     public class HardwhereDbContext : DbContext
     {
+        public DbSet<Address> Addresses { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<PaymentGateWay> PaymentGateWays { get; set; }
         public DbSet<ProductCategory> ProductCategories { get; set; }
@@ -19,6 +21,8 @@ namespace infrastructure
         public DbSet<GalleryImage> GalleryImages { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartProduct> CartContents { get; set; }
+
+        public DbSet<Order> Orders { get; set; }
 
         public HardwhereDbContext(DbContextOptions<HardwhereDbContext> options)
             : base(options) { }
@@ -31,6 +35,12 @@ namespace infrastructure
                 LogLevel.Information
             );
             optionsBuilder.EnableSensitiveDataLogging();
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    "Server=localhost;Database=Hardwhere;Trusted_Connection=True;TrustServerCertificate=True"
+                );
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -59,6 +69,47 @@ namespace infrastructure
                 .WithMany(c => c.contents)
                 .HasForeignKey(cp => cp.CartId)
                 .IsRequired();
+
+            modelBuilder
+                .Entity<Address>()
+                .HasOne(cp => cp.user)
+                .WithMany()
+                .HasForeignKey(cp => cp.userId)
+                .IsRequired();
+
+            modelBuilder
+                .Entity<Order>()
+                .HasOne(e => e.admin)
+                .WithMany()
+                .HasForeignKey(e => e.adminId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<Order>()
+                .HasOne(e => e.BillingAdress)
+                .WithMany()
+                .HasForeignKey(e => e.BillingAddressId)
+                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder
+                .Entity<Order>()
+                .HasOne(e => e.ShippingAddress)
+                .WithMany()
+                .HasForeignKey(e => e.ShippingAdressId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder
+                .Entity<Order>()
+                .HasMany(c => c.contentes)
+                .WithOne()
+                .HasForeignKey(cp => cp.OrderId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            modelBuilder
+                .Entity<OrderContents>()
+                .HasOne(cp => cp.order)
+                .WithMany(c => c.contentes)
+                .HasForeignKey(cp => cp.OrderId)
+                .IsRequired();
+            ;
         }
     }
 }

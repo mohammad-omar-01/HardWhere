@@ -16,8 +16,6 @@ namespace Domain.UserNS
         public string UserName { get; set; }
         public UserRole Role { get; set; } = UserRole.Customer;
         public string? Token { get; set; }
-        public Address? Billing { get; set; }
-        public Address? Shipping { get; set; }
         public List<Product>? Products { get; set; }
     }
 }

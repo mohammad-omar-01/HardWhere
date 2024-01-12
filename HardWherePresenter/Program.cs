@@ -9,6 +9,9 @@ using Application.Services.Categoery;
 using Application.Services.Payment;
 using Application.Services.ProductServiceNS;
 using Application.Services.UserInformation;
+using Application.Services___Repositores.OrderNs;
+using Application.Services___Repositores.OrderService;
+using Application.Services___Repositores.UserInformation;
 using Application.Utilities;
 using HardWhere.Application.Product.Validators;
 using infrastructure;
@@ -18,6 +21,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -64,11 +68,15 @@ builder.Services.AddScoped<IUserInformationService<UserTypeDTO>, UserTypeInforma
 builder.Services.AddScoped<ICategoeryRepository, CateogeryRepository>();
 builder.Services.AddScoped<ICategoeryService, CategoeryService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductService, Application.Services.ProductServiceNS.ProductService>();
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IUserInformationServiceAddress, UserInfromationAddresses>();
+builder.Services.AddScoped<IAddress, AddressRepository>();
 
-builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IFileService, Application.DTOs.ProductDTO.FileService>();
 builder.Services.AddTransient<IStringRandomGenarotor<SKUGenerator>, SKUGenerator>();
 builder.Services.AddTransient<IStringRandomGenarotor<SlugGenerator>, SlugGenerator>();
 builder.Services
@@ -129,6 +137,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
     app.UseCors("MyPolicy");
 }
+StripeConfiguration.ApiKey =
+    "sk_test_51OXPeOCZ8fe8KVeaTMjg8Fvfd0rUmabgZRITBCCkGlv2psPpSaf4vFhC02uo8lmr8rglhjtHG5TsDRfD8lWxDlIu00Nq8rxuZK";
 app.UseCors("MyPolicy");
 app.UseHttpsRedirection();
 app.UseAuthentication();

@@ -1,10 +1,13 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Cart;
+using Application.DTOs.Order;
 using Application.DTOs.ProductDTO;
 using Application.DTOsNS;
 using AutoMapper;
 using Domain.CartNS;
 using Domain.Enums;
+using Domain.OrderNS;
 using Domain.ProductNS;
+using Domain.UserNS;
 
 namespace Application
 {
@@ -82,7 +85,7 @@ namespace Application
                         opt => opt.MapFrom(src => src.product.productImage.sourceUrl)
                     );
 
-                cfg.CreateMap<ProductForCart, ProductImage>()
+                cfg.CreateMap<ProductRequestDTO, ProductImage>()
                     .ForMember(dest => dest.SourceUrl, opt => opt.MapFrom(src => src.productImage))
                     .ForMember(
                         dest => dest.SourceUrl,
@@ -109,16 +112,124 @@ namespace Application
                     .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.quantity))
                     .ForMember(dest => dest.key, opt => opt.MapFrom(src => src.ProductId));
 
-                cfg.CreateMap<ProductForCart, ProductImage>()
+                cfg.CreateMap<ProductRequestDTO, ProductImage>()
                     .ForMember(dest => dest.SourceUrl, opt => opt.MapFrom(src => src.productImage))
                     .ForMember(
                         dest => dest.SourceUrl,
                         opt => opt.MapFrom(src => src.productImage.sourceUrl)
                     );
 
-                cfg.CreateMap<ProductImage, ProductForCart>()
+                cfg.CreateMap<ProductImage, ProductRequestDTO>()
                     .ForMember(dest => dest.productImage, opt => opt.MapFrom(src => src));
+
+                cfg.CreateMap<OrderDTO, Order>()
+                    .ForMember(dest => dest.customerId, opt => opt.MapFrom(src => src.userId))
+                    .ForMember(dest => dest.total, opt => opt.MapFrom(src => src.totalInt))
+                    .ForMember(
+                        dest => dest.shippingTotal,
+                        opt => opt.MapFrom(src => src.shipptingTotal)
+                    );
+
+                cfg.CreateMap<Address, AddressDTO>();
+                cfg.CreateMap<AddressDTO, Address>();
+                cfg.CreateMap<AddressReturnResultDTO, Address>();
+                cfg.CreateMap<Address, AddressReturnResultDTO>();
+                cfg.CreateMap<User, UserDTOForAdress>();
+                cfg.CreateMap<UserDTOForAdress, User>();
+
+                cfg.CreateMap<Address, AddressReturnResultDTO>();
+                cfg.CreateMap<Order, OrderDtoReturnResult>()
+                    .ForPath(dest => dest.result.userId, opt => opt.MapFrom(src => src.customerId))
+                    .ForPath(dest => dest.result.totalInt, opt => opt.MapFrom(src => src.total))
+                    .ForPath(
+                        dest => dest.result.shipptingTotal,
+                        opt => opt.MapFrom(src => src.shippingTotal)
+                    )
+                    .ForPath(dest => dest.result.contents, opt => opt.MapFrom(src => src.contentes))
+                    .ForPath(
+                        dest => dest.result.shippingAddressId,
+                        opt => opt.MapFrom(src => src.ShippingAdressId)
+                    )
+                    .ForPath(
+                        dest => dest.result.billingAddressId,
+                        opt => opt.MapFrom(src => src.BillingAddressId)
+                    )
+                    .ForPath(
+                        dest => dest.result.total,
+                        opt => opt.MapFrom(src => src.total.ToString())
+                    )
+                    .ForPath(dest => dest.OrderId, opt => opt.MapFrom(src => src.orderId))
+                    .ForPath(dest => dest.shipping, opt => opt.MapFrom(src => src.ShippingAddress))
+                    .ForPath(dest => dest.billing, opt => opt.MapFrom(src => src.BillingAdress))
+                    .ForPath(
+                        dest => dest.OrderDate,
+                        opt => opt.MapFrom(src => src.orderDate.ToShortDateString())
+                    )
+                    .ForPath(dest => dest.OrderStatus, opt => opt.MapFrom(src => src.orderStatus))
+                    .ReverseMap();
+
+                cfg.CreateMap<Order, OrderDTO>()
+                    .ForMember(dest => dest.userId, opt => opt.MapFrom(src => src.customerId))
+                    .ForMember(dest => dest.totalInt, opt => opt.MapFrom(src => src.total))
+                    .ForMember(
+                        dest => dest.shipptingTotal,
+                        opt => opt.MapFrom(src => src.shippingTotal)
+                    )
+                    .ForPath(dest => dest.contents, opt => opt.MapFrom(src => src.contentes))
+                    .ForPath(
+                        dest => dest.shippingAddressId,
+                        opt => opt.MapFrom(src => src.ShippingAdressId)
+                    )
+                    .ForPath(
+                        dest => dest.billingAddressId,
+                        opt => opt.MapFrom(src => src.BillingAddressId)
+                    )
+                    .ReverseMap();
+
+                cfg.CreateMap<OrderItem, OrderContents>()
+                    .ForMember(
+                        dest => dest.OrderProductName,
+                        opt => opt.MapFrom(src => src.product.name)
+                    )
+                    .ForMember(dest => dest.slug, opt => opt.MapFrom(src => src.product.slug))
+                    .ForMember(
+                        dest => dest.ProductId,
+                        opt => opt.MapFrom(src => src.product.productId)
+                    )
+                    .ForMember(
+                        dest => dest.price,
+                        opt => opt.MapFrom(src => int.Parse(src.product.priceRegular))
+                    )
+                    .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.quantity))
+                    .ForMember(
+                        dest => dest.ProductImage,
+                        opt => opt.MapFrom(src => src.product.productImage.sourceUrl)
+                    )
+                    .ForMember(dest => dest.slug, opt => opt.MapFrom(src => src.product.slug))
+                    .ReverseMap()
+                    .ForPath(a => a.product.name, opt => opt.MapFrom(src => src.OrderProductName))
+                    .ForPath(
+                        a => a.product.productImage.sourceUrl,
+                        opt => opt.MapFrom(src => src.ProductImage)
+                    )
+                    .ForPath(a => a.product.productId, opt => opt.MapFrom(src => src.ProductId))
+                    .ForPath(
+                        a => a.product.priceRegular,
+                        opt => opt.MapFrom(src => src.price.ToString())
+                    )
+                    .ForPath(
+                        a => a.product.price,
+                        opt => opt.MapFrom(src => "₪" + src.price.ToString())
+                    )
+                    .ForPath(a => a.product.slug, opt => opt.MapFrom(src => src.slug))
+                    .ForPath(a => a.quantity, opt => opt.MapFrom(src => src.quantity))
+                    .ForPath(
+                        a => a.totalPriceForTheseProducts,
+                        opt => opt.MapFrom(src => (src.price * src.quantity))
+                    )
+                    .ForPath(a => a.priceRegular, opt => opt.MapFrom(src => src.price.ToString()));
             });
+
             var mapper = new Mapper(config);
             return mapper;
         }

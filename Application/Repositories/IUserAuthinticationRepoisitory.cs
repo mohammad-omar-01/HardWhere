@@ -1,4 +1,4 @@
-﻿using Application.DTOsNS;
+﻿using Application.DTOs.User;
 using Domain.UserNS;
 
 namespace Application.Repositories
