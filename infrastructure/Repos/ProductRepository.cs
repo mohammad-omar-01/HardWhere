@@ -158,6 +158,9 @@ namespace infrastructure.Repos
                     .Include(p => p.GalleryImages)
                     .Include(p => p.Categories)
                     .Include(p => p.ProductImage)
+                    .Where(
+                        p => p.prdouctApprovalStatus == Domain.Enums.PrdouctApprovalStatus.Approved
+                    )
                     .ToListAsync();
 
                 if (products == null)

@@ -67,5 +67,25 @@ namespace HardWherePresenter.Controllers
             );
             return Ok(json);
         }
+
+        [HttpPut("Address/{userId}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<AddressReturnResultDTO>> UpdateAddress(
+            [FromRoute] int userId,
+            [FromBody] AddressDTO address
+        )
+        {
+            var response = await _userAdresses.UpdateUserAddress(userId, address);
+            if (response == null)
+            {
+                return NotFound("No Adressses Found For this User");
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Ok(json);
+        }
     }
 }

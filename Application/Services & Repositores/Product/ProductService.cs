@@ -1,9 +1,11 @@
-﻿using Application.DTOs.ProductDTO;
+﻿using Application.DTOs;
+using Application.DTOs.ProductDTO;
 using Application.Repositories;
 using Application.Utilities;
 using Domain.Enums;
 using Domain.ProductNS;
 using Microsoft.Extensions.DependencyInjection;
+using System.Text;
 
 namespace Application.Services.ProductServiceNS
 {

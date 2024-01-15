@@ -3,6 +3,7 @@ using Application.Repositories;
 using Application.Services.UserInformation;
 using Domain.Enums;
 using Domain.OrderNS;
+using Domain.UserNS;
 
 namespace Application.Services___Repositores.UserInformation
 {
@@ -26,6 +27,17 @@ namespace Application.Services___Repositores.UserInformation
             var addressesToReturn = _mapper.Map<List<AddressReturnResultDTO>>(addresses);
 
             return addressesToReturn;
+        }
+
+        public async Task<AddressReturnResultDTO> UpdateUserAddress(int UserId, AddressDTO address)
+        {
+            var _mapper = ApplicationMapper.InitializeAutomapper();
+            var addressesToReturn = _mapper.Map<Address>(address);
+            var addressReturned = await _addressRepository.UpdateUserAddress(
+                UserId,
+                addressesToReturn
+            );
+            return _mapper.Map<AddressReturnResultDTO>(addressReturned);
         }
     }
 }

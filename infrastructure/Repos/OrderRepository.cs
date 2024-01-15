@@ -18,8 +18,14 @@ namespace infrastructure.Repos
         public async Task<Order> AddNewOrder(Order order)
         {
             var orderToAdd = await _dbContext.Orders.AddAsync(order);
-
+            var address = await _dbContext.Addresses.FirstOrDefaultAsync(
+                a => a.AddressID == order.BillingAddressId
+            );
+            if (address.AddressName == string.Empty && address.Address1 == string.Empty) { }
             await _dbContext.SaveChangesAsync();
+            orderToAdd.Entity.Customer = await _dbContext.Users.FirstOrDefaultAsync(
+                a => a.Id == order.customerId
+            );
 
             return orderToAdd.Entity;
         }

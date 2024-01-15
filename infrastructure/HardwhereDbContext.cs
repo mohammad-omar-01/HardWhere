@@ -1,4 +1,5 @@
 ﻿using Domain.CartNS;
+using Domain.NotficationNS;
 using Domain.OrderNS;
 using Domain.Payment;
 using Domain.ProductNS;
@@ -21,6 +22,7 @@ namespace infrastructure
         public DbSet<GalleryImage> GalleryImages { get; set; }
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartProduct> CartContents { get; set; }
+        public DbSet<Notfication> Notfications { get; set; }
 
         public DbSet<Order> Orders { get; set; }
 
@@ -108,6 +110,12 @@ namespace infrastructure
                 .HasOne(cp => cp.order)
                 .WithMany(c => c.contentes)
                 .HasForeignKey(cp => cp.OrderId)
+                .IsRequired();
+            modelBuilder
+                .Entity<Notfication>()
+                .HasOne(cp => cp.User)
+                .WithMany()
+                .HasForeignKey(cp => cp.userId)
                 .IsRequired();
             ;
         }

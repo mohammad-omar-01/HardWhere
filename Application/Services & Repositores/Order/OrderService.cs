@@ -1,20 +1,50 @@
-﻿using Application.DTOs.Order;
-using Domain.OrderNS;
+﻿using Application.DTOs;
+using Application.DTOs.Order;
 using Application.Repositories;
+using Application.Services___Repositores.Mail;
 using Application.Services___Repositores.OrderService;
-using Application.DTOs.Cart;
-using Domain.CartNS;
-using Domain.UserNS;
+using Domain.OrderNS;
+using System.Text;
 
 namespace Application.Services___Repositores.OrderNs
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IMailService _mailService;
+        MailData mailData;
 
-        public OrderService(IOrderRepository orderRepository)
+        public OrderService(IOrderRepository orderRepository, IMailService mailService)
         {
             this._orderRepository = orderRepository;
+            this._mailService = mailService;
+            mailData = new MailData();
+        }
+
+        private void NotifyUser(Order order)
+        {
+            StringBuilder builder = new StringBuilder();
+            order.contentes.ForEach(a =>
+            {
+                builder.Append(a.OrderProductName);
+                builder.AppendLine();
+            });
+            mailData.EmailToId = order.Customer.Email;
+            mailData.EmailToName = order.Customer.FirstName + " " + order.Customer.LastName;
+            mailData.EmailBody =
+                $"A new Order Has Been Placed for your this list of Products: \n" + $"{builder} ";
+            mailData.EmailSubject = "Your Products are being orderd!!";
+        }
+
+        private void NotifyUserByOrderChange(Order order, string value)
+        {
+            StringBuilder builder = new StringBuilder();
+
+            mailData.EmailToId = order.BillingAdress.user.Email;
+            mailData.EmailToName =
+                order.BillingAdress.user.FirstName + " " + order.BillingAdress.user.LastName;
+            mailData.EmailBody = $"Your Order is : \n" + $"{value} ";
+            mailData.EmailSubject = "Order New Status";
         }
 
         public async Task<OrderDtoReturnResult> AddNewOrder(OrderDTO order)
@@ -23,6 +53,8 @@ namespace Application.Services___Repositores.OrderNs
             var orderToAdd = _mapper.Map<Order>(order);
             orderToAdd.orderDate = DateTime.Now;
             orderToAdd = await _orderRepository.AddNewOrder(orderToAdd);
+            NotifyUser(orderToAdd);
+            _mailService.SendMail(mailData);
             var orderToReturn = _mapper.Map<OrderDTO>(orderToAdd);
             // MapContents(orderToReturn, orderToAdd);
 
@@ -40,6 +72,8 @@ namespace Application.Services___Repositores.OrderNs
             {
                 return false;
             }
+            NotifyUserByOrderChange(order, value);
+            _mailService.SendMail(mailData);
             return await _orderRepository.UpdateOrderStatus(id, value);
         }
 

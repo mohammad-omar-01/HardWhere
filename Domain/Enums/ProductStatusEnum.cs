@@ -5,4 +5,11 @@
         Used,
         New
     }
+
+    public enum PrdouctApprovalStatus
+    {
+        Approved,
+        Pending,
+        Rejected
+    }
 }

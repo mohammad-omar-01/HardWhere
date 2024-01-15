@@ -1,4 +1,5 @@
-﻿using Application.DTOs.ProductDTO;
+﻿using Application.DTOs;
+using Application.DTOs.ProductDTO;
 using Application.DTOsNS.UserType;
 using Application.Mappers;
 using Application.Repositories;
@@ -9,6 +10,7 @@ using Application.Services.Categoery;
 using Application.Services.Payment;
 using Application.Services.ProductServiceNS;
 using Application.Services.UserInformation;
+using Application.Services___Repositores.Mail;
 using Application.Services___Repositores.OrderNs;
 using Application.Services___Repositores.OrderService;
 using Application.Services___Repositores.UserInformation;
@@ -73,8 +75,11 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddTransient<IMailService, MailService>();
+
 builder.Services.AddScoped<IUserInformationServiceAddress, UserInfromationAddresses>();
 builder.Services.AddScoped<IAddress, AddressRepository>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddScoped<IFileService, Application.DTOs.ProductDTO.FileService>();
 builder.Services.AddTransient<IStringRandomGenarotor<SKUGenerator>, SKUGenerator>();

@@ -12,6 +12,7 @@ namespace Domain.ProductNS
         public int ProductId { get; set; }
         public string Name { get; set; }
         public string Slug { get; set; }
+        public PrdouctApprovalStatus prdouctApprovalStatus { get; set; }
         public string Sku { get; set; }
         public bool? OnSale { get; set; }
         public DateTime? DateAdded { get; set; }
