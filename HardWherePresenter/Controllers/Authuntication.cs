@@ -57,7 +57,7 @@ namespace HardWherePresenter.Controllers
         {
             var token = Request.Headers["Authorization"];
 
-            //var response = _userAuthicticateService.Logout(logoutRequest);
+            //var response = _userAuthicticateService.Logout();
             //if (response == false)
             //{
             //    return BadRequest("User Not LoggedIn");

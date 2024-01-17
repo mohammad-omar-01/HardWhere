@@ -3,6 +3,7 @@ using Application.DTOs.ProductDTO;
 using Application.DTOsNS.UserType;
 using Application.Mappers;
 using Application.Repositories;
+using Application.RepositoriesNS;
 using Application.Services;
 using Application.Services.Authintication;
 using Application.Services.CartNS;
@@ -11,15 +12,18 @@ using Application.Services.Payment;
 using Application.Services.ProductServiceNS;
 using Application.Services.UserInformation;
 using Application.Services___Repositores.Mail;
+using Application.Services___Repositores.NotficationNS;
 using Application.Services___Repositores.OrderNs;
 using Application.Services___Repositores.OrderService;
 using Application.Services___Repositores.UserInformation;
 using Application.Utilities;
 using HardWhere.Application.Product.Validators;
+using HardWherePresenter;
 using infrastructure;
 using infrastructure.Repos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
@@ -75,15 +79,18 @@ builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<INotficationRepository, NotficationRepository>();
+builder.Services.AddScoped<INotficationService, NotficationService>();
 builder.Services.AddTransient<IMailService, MailService>();
-
 builder.Services.AddScoped<IUserInformationServiceAddress, UserInfromationAddresses>();
+
 builder.Services.AddScoped<IAddress, AddressRepository>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddScoped<IFileService, Application.DTOs.ProductDTO.FileService>();
 builder.Services.AddTransient<IStringRandomGenarotor<SKUGenerator>, SKUGenerator>();
 builder.Services.AddTransient<IStringRandomGenarotor<SlugGenerator>, SlugGenerator>();
+builder.Services.AddSignalR();
 builder.Services
     .AddAuthentication(options =>
     {
@@ -93,25 +100,29 @@ builder.Services
     })
     .AddJwtBearer(options =>
     {
-        var hmac = new HMACSHA512(
-            Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretKey"])
-        );
-
         options.TokenValidationParameters = new TokenValidationParameters
         {
-            ValidateIssuer = false,
+            ValidateIssuer = true,
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Authentication:Issuer"],
             ValidAudience = builder.Configuration["Authentication:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(hmac.Key)
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(builder.Configuration["Authentication:SecretKey"])
+            )
         };
         options.Events = new JwtBearerEvents
         {
-            OnAuthenticationFailed = context =>
+            OnMessageReceived = context =>
             {
-                logger.LogError("Authentication failed: " + context.Exception.Message);
+                var accessToken = context.Request.Query["access_token"];
+
+                var path = context.HttpContext.Request.Path;
+                if ((path.StartsWithSegments("/api/public/notify")))
+                {
+                    context.Token = accessToken;
+                }
                 return Task.CompletedTask;
             }
         };
@@ -119,7 +130,7 @@ builder.Services
 
 builder.Services.AddDbContext<HardwhereDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 builder.Services.AddAutoMapper(typeof(UserAutoMaper).Assembly);
 builder.Services.AddAuthorization(auth =>
@@ -157,7 +168,9 @@ app.UseStaticFiles(
         RequestPath = new PathString("/images")
     }
 );
+app.UseRouting();
 
+app.MapHub<NotificationHub>("api/public/notify");
 app.MapControllers();
 
 app.Run();

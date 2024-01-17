@@ -25,6 +25,7 @@ namespace Application.Utilities
         {
             var secretKey = _configuration["Authentication:SecretKey"];
             var audience = _configuration["Authentication:Audience"];
+            var issuer = _configuration["Authentication:Issuer"];
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secretKey);
@@ -42,6 +43,7 @@ namespace Application.Utilities
                 ),
                 Expires = DateTime.UtcNow.AddHours(6),
                 Audience = audience,
+                Issuer = issuer,
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha512

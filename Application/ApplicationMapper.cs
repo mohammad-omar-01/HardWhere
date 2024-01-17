@@ -1,10 +1,12 @@
 ﻿using Application.DTOs.Cart;
+using Application.DTOs.Notfication;
 using Application.DTOs.Order;
 using Application.DTOs.ProductDTO;
 using Application.DTOsNS;
 using AutoMapper;
 using Domain.CartNS;
 using Domain.Enums;
+using Domain.NotficationNS;
 using Domain.OrderNS;
 using Domain.ProductNS;
 using Domain.UserNS;
@@ -132,6 +134,7 @@ namespace Application
 
                 cfg.CreateMap<Address, AddressDTO>();
                 cfg.CreateMap<AddressDTO, Address>();
+                cfg.CreateMap<NotficationDTO, Notfication>().ReverseMap();
                 cfg.CreateMap<AddressReturnResultDTO, Address>();
                 cfg.CreateMap<Address, AddressReturnResultDTO>();
                 cfg.CreateMap<User, UserDTOForAdress>();

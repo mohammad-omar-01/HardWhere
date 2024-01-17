@@ -85,6 +85,40 @@ namespace infrastructure.Migrations
                     b.ToTable("CartContents");
                 });
 
+            modelBuilder.Entity("Domain.NotficationNS.Notfication", b =>
+                {
+                    b.Property<int>("NotficationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("NotficationId"));
+
+                    b.Property<string>("NotficationBody")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NotficationTitle")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NotficationType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("slug")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("userId")
+                        .HasColumnType("int");
+
+                    b.HasKey("NotficationId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("Notfications");
+                });
+
             modelBuilder.Entity("Domain.OrderNS.Order", b =>
                 {
                     b.Property<int>("orderId")
@@ -461,6 +495,17 @@ namespace infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("cart");
+                });
+
+            modelBuilder.Entity("Domain.NotficationNS.Notfication", b =>
+                {
+                    b.HasOne("Domain.UserNS.User", "User")
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.OrderNS.Order", b =>

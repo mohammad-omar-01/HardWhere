@@ -39,8 +39,8 @@ namespace infrastructure
             optionsBuilder.EnableSensitiveDataLogging();
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(
-                    "Server=localhost;Database=Hardwhere;Trusted_Connection=True;TrustServerCertificate=True"
+                optionsBuilder.UseNpgsql(
+                    "User Id=postgres;Password=321HardWhere.ps@;Server=db.hctgicuvarolobizspdr.supabase.co;Port=5432;Database=postgres"
                 );
             }
         }

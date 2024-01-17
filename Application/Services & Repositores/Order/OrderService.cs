@@ -1,9 +1,17 @@
 ﻿using Application.DTOs;
+using Application.DTOs.Notfication;
 using Application.DTOs.Order;
 using Application.Repositories;
 using Application.Services___Repositores.Mail;
+using Application.Services___Repositores.NotficationNS;
 using Application.Services___Repositores.OrderService;
+using BasicNotification;
+using Domain.NotficationNS;
 using Domain.OrderNS;
+using Domain.UserNS;
+using HardWherePresenter;
+using Microsoft.AspNetCore.SignalR;
+using Stripe;
 using System.Text;
 
 namespace Application.Services___Repositores.OrderNs
@@ -12,12 +20,23 @@ namespace Application.Services___Repositores.OrderNs
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMailService _mailService;
+        private readonly INotficationService _notficationService;
+        private readonly IHubContext<NotificationHub, IClientNotificationHub> _hubContext;
+
         MailData mailData;
 
-        public OrderService(IOrderRepository orderRepository, IMailService mailService)
+        public OrderService(
+            IOrderRepository orderRepository,
+            IMailService mailService,
+            INotficationService notficationService,
+            IHubContext<NotificationHub, IClientNotificationHub> hubContext
+        )
         {
             this._orderRepository = orderRepository;
             this._mailService = mailService;
+            this._notficationService = notficationService;
+            this._hubContext = hubContext;
+
             mailData = new MailData();
         }
 
@@ -34,9 +53,10 @@ namespace Application.Services___Repositores.OrderNs
             mailData.EmailBody =
                 $"A new Order Has Been Placed for your this list of Products: \n" + $"{builder} ";
             mailData.EmailSubject = "Your Products are being orderd!!";
+            CreateNotficationForOrder(order.customerId, mailData.EmailBody);
         }
 
-        private void NotifyUserByOrderChange(Order order, string value)
+        private void MailUserByOrderChange(Order order, string value)
         {
             StringBuilder builder = new StringBuilder();
 
@@ -47,6 +67,27 @@ namespace Application.Services___Repositores.OrderNs
             mailData.EmailSubject = "Order New Status";
         }
 
+        private async void CreateNotficationForOrder(int userId, string value)
+        {
+            NotficationDTO notficationDTO = new NotficationDTO();
+            notficationDTO.NotficationType = "New Order Status";
+            notficationDTO.NotficationBody = $"Your Order has a New State, it's now {value}";
+            notficationDTO.userId = userId;
+            notficationDTO.NotficationTitle = "Your order has a new update";
+            var notif = await _notficationService.CreateNotfication(notficationDTO);
+            var user = "";
+            try
+            {
+                user = ConnectionMapping<string>._connections[userId.ToString()].LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+                user = "";
+            }
+
+            await _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
+        }
+
         public async Task<OrderDtoReturnResult> AddNewOrder(OrderDTO order)
         {
             var _mapper = ApplicationMapper.InitializeAutomapper();
@@ -54,9 +95,8 @@ namespace Application.Services___Repositores.OrderNs
             orderToAdd.orderDate = DateTime.Now;
             orderToAdd = await _orderRepository.AddNewOrder(orderToAdd);
             NotifyUser(orderToAdd);
-            _mailService.SendMail(mailData);
+            //    _mailService.SendMail(mailData);
             var orderToReturn = _mapper.Map<OrderDTO>(orderToAdd);
-            // MapContents(orderToReturn, orderToAdd);
 
             return new OrderDtoReturnResult
             {
@@ -72,8 +112,9 @@ namespace Application.Services___Repositores.OrderNs
             {
                 return false;
             }
-            NotifyUserByOrderChange(order, value);
-            _mailService.SendMail(mailData);
+            MailUserByOrderChange(order, value);
+            //  _mailService.SendMail(mailData);
+            CreateNotficationForOrder(order.customerId, value);
             return await _orderRepository.UpdateOrderStatus(id, value);
         }
 
