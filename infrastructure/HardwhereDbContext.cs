@@ -31,6 +31,8 @@ namespace infrastructure
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+
             optionsBuilder.LogTo(
                 Console.WriteLine,
                 new[] { DbLoggerCategory.Database.Command.Name },

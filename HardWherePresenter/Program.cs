@@ -157,8 +157,7 @@ StripeConfiguration.ApiKey =
     "sk_test_51OXPeOCZ8fe8KVeaTMjg8Fvfd0rUmabgZRITBCCkGlv2psPpSaf4vFhC02uo8lmr8rglhjtHG5TsDRfD8lWxDlIu00Nq8rxuZK";
 app.UseCors("MyPolicy");
 app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
+
 app.UseStaticFiles(
     new StaticFileOptions()
     {
@@ -172,5 +171,7 @@ app.UseRouting();
 
 app.MapHub<NotificationHub>("api/public/notify");
 app.MapControllers();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.Run();

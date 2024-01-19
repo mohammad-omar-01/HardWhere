@@ -19,9 +19,7 @@ namespace infrastructure.Repos
 
         public async Task<Product> AddProductAsync(Product product)
         {
-            var response = _dbContext.Products.AddAsync(product).AsTask().Result;
-
-            await _dbContext.SaveChangesAsync();
+            var response = _dbContext.Products.Add(product);
 
             return response.Entity;
         }
@@ -119,7 +117,7 @@ namespace infrastructure.Repos
                     }
                 }
             }
-            await _dbContext.SaveChangesAsync();
+            _dbContext.SaveChanges();
             return product;
         }
 
