@@ -84,6 +84,23 @@ namespace HardWherePresenter.Controllers
             return Ok(json);
         }
 
+        [HttpGet("Address/{userId}/v2")]
+        [AllowAnonymous]
+        public async Task<ActionResult<int>> GetAddressId([FromRoute] int userId)
+        {
+            var response = await _userAdresses.GetUserAdressId(userId);
+            if (response == null)
+            {
+                return NotFound("No Adressses Found For this User");
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Ok(json);
+        }
+
         [HttpPut("Address/{userId}")]
         [Authorize]
         public async Task<ActionResult<AddressReturnResultDTO>> UpdateAddress(

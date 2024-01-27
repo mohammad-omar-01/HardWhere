@@ -27,6 +27,11 @@ namespace Application.Services___Repositores.UserInformation
             return addressesToReturn;
         }
 
+        public Task<int> GetUserAdressId(int userId)
+        {
+            return _addressRepository.GetUserAdressId(userId);
+        }
+
         public async Task<AddressReturnResultDTO> UpdateUserAddress(int UserId, AddressDTO address)
         {
             var _mapper = ApplicationMapper.InitializeAutomapper();

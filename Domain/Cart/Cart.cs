@@ -12,7 +12,7 @@ namespace Domain.CartNS
 
         [ForeignKey(nameof(User))]
         public int userId { get; set; }
-        public double total { get; set; }
+        public double total { get; set; } = 0.0;
         public bool isEmpty { get; set; } = true;
         public int carItemscount { get; set; }
         public List<CartProduct>? contents { get; set; } = new List<CartProduct> { };

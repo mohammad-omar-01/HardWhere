@@ -201,7 +201,7 @@ namespace Application
                     )
                     .ForMember(
                         dest => dest.price,
-                        opt => opt.MapFrom(src => int.Parse(src.product.priceRegular))
+                        opt => opt.MapFrom(src => double.Parse(src.product.priceRegular))
                     )
                     .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.quantity))
                     .ForMember(

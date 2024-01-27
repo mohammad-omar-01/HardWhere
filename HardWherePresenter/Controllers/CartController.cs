@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Cart;
 using Application.Services;
+using Domain.CartNS;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -20,6 +21,22 @@ namespace HardWherePresenter.Controllers
         public async Task<ActionResult<CartDtoReturnResult>> AddCart([FromBody] CartDTO cart)
         {
             var response = await _cartService.AddNewCart(cart);
+            if (response == null)
+            {
+                return BadRequest("Cart already exists");
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Ok(json);
+        }
+
+        [HttpPost("{userId}")]
+        public async Task<ActionResult<Cart>> AddCart([FromRoute] int userId)
+        {
+            var response = await _cartService.AddNewCartEmpty(userId);
             if (response == null)
             {
                 return BadRequest("Cart already exists");

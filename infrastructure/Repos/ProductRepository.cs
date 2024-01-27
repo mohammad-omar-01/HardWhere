@@ -222,6 +222,7 @@ namespace infrastructure.Repos
 
             var paginatedProducts = await _dbContext.Products
                 .Include(p => p.Categories)
+                .Include(p => p.ProductImage)
                 .OrderBy(b => b.ProductId)
                 .Skip(recordsToSkip)
                 .Take(pageSize)

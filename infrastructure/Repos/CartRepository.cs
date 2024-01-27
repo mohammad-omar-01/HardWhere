@@ -21,6 +21,19 @@ namespace infrastructure.Repos
             return cart;
         }
 
+        public Task<Cart> AddNewCartEmpty(int userId)
+        {
+            Cart cart = new Cart();
+            cart.userId = userId;
+            var checkCart = _dbContext.Carts.FirstOrDefault(a => a.userId == userId);
+            if (checkCart != null)
+            {
+                return Task.FromResult(checkCart);
+            }
+            var addedCart = _dbContext.Carts.Add(cart);
+            return Task.FromResult(addedCart.Entity);
+        }
+
         public async Task<Cart> DeleteCart(int cartId)
         {
             var cart = await _dbContext.Carts.FirstOrDefaultAsync(c => c.cartId == cartId);

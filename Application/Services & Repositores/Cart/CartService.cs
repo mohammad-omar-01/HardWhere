@@ -167,5 +167,11 @@ namespace Application.Services.CartNS
             cartToReturn.contents = contents;
             return new CartDtoReturnResult { result = cartToReturn, CartId = cartToCheck.cartId };
         }
+
+        public Task<Cart> AddNewCartEmpty(int UserId)
+        {
+            var cart = _cartRepository.AddNewCartEmpty(UserId);
+            return cart;
+        }
     }
 }

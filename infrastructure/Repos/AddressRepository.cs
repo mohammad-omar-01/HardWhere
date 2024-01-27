@@ -24,6 +24,13 @@ namespace infrastructure.Repos
             return result;
         }
 
+        public Task<int> GetUserAdressId(int userId)
+        {
+            var result = _dbContext.Addresses.FirstOrDefault(a => a.userId == userId).AddressID;
+
+            return Task.FromResult(result);
+        }
+
         public async Task<Address> UpdateUserAddress(int userId, Address address)
         {
             var adressReturnd = await _dbContext.Addresses.FirstOrDefaultAsync(

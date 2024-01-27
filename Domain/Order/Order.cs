@@ -25,9 +25,9 @@ namespace Domain.OrderNS
         public DateTime orderDate { get; set; } = DateTime.Now;
 
         [Required]
-        public int total { get; set; }
+        public double total { get; set; }
 
-        public int? shippingTotal { get; set; }
+        public double? shippingTotal { get; set; }
 
         [Required]
         public virtual User Customer { get; set; }
