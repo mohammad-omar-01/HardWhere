@@ -3,6 +3,7 @@ using Application.Repositories;
 using AutoMapper;
 using Domain.ProductNS;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 namespace infrastructure.Repos
 {
@@ -177,6 +178,41 @@ namespace infrastructure.Repos
             }
         }
 
+        public Task<bool> UpdateProductImageAsync(string mainimage, List<string> Gimages, int id)
+        {
+            var productToUpdateImagesFor = _dbContext.Products.FirstOrDefault(
+                a => a.ProductId == id
+            );
+            if (productToUpdateImagesFor == null)
+            {
+                return Task.FromResult(false);
+            }
+            List<GalleryImage> images = new List<GalleryImage>();
+
+            if (!mainimage.IsNullOrEmpty())
+            {
+                ProductImage Mainimage = new ProductImage(id, mainimage, productToUpdateImagesFor);
+                productToUpdateImagesFor.ProductImage = Mainimage;
+            }
+            if (Gimages.Count > 0)
+            {
+                Gimages.ForEach(image =>
+                {
+                    if (image != null)
+                    {
+                        GalleryImage galleryImage = new GalleryImage();
+                        galleryImage.SourceUrl = image;
+                        galleryImage.Product = productToUpdateImagesFor;
+                        galleryImage.ProductId = id;
+                        images.Add(galleryImage);
+                    }
+                });
+                productToUpdateImagesFor.GalleryImages = images;
+            }
+            _dbContext.SaveChanges();
+            return Task.FromResult(true);
+        }
+
         public async Task<List<SimpleProductDTO>> GetAllProductsPagination(
             int pageNumber,
             int pageSize
@@ -192,6 +228,18 @@ namespace infrastructure.Repos
                 .ToListAsync();
 
             return _mapper.Map<List<SimpleProductDTO>>(paginatedProducts);
+        }
+
+        public Task<bool> DeleteProductById(int ProductId)
+        {
+            var productToCheck = _dbContext.Products.FirstOrDefault(a => a.ProductId == ProductId);
+            if (productToCheck != null)
+            {
+                _dbContext.Products.Remove(productToCheck);
+                _dbContext.SaveChanges();
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
         }
     }
 }

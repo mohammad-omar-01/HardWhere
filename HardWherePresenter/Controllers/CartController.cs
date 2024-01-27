@@ -17,7 +17,7 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CartDTO>> AddCart([FromBody] CartDTO cart)
+        public async Task<ActionResult<CartDtoReturnResult>> AddCart([FromBody] CartDTO cart)
         {
             var response = await _cartService.AddNewCart(cart);
             if (response == null)
@@ -33,7 +33,7 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpDelete("{cartId}")]
-        public async Task<ActionResult<CartDTO>> DeleteCart([FromRoute] int cartId)
+        public async Task<ActionResult<CartDtoReturnResult>> DeleteCart([FromRoute] int cartId)
         {
             var response = await _cartService.deleteCartById(cartId);
             if (response == null)
@@ -49,7 +49,7 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpGet("{cartId}")]
-        public async Task<ActionResult<CartDTO>> GetCartById([FromRoute] int cartId)
+        public async Task<ActionResult<CartDtoReturnResult>> GetCartById([FromRoute] int cartId)
         {
             var response = await _cartService.GetCartByID(cartId);
             if (response == null)
@@ -65,7 +65,7 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpGet("User/{userId}")]
-        public async Task<ActionResult<CartDTO>> GetCartByUserId([FromRoute] int userId)
+        public async Task<ActionResult<CartDtoReturnResult>> GetCartByUserId([FromRoute] int userId)
         {
             var response = await _cartService.GetCartByUserID(userId);
             if (response == null)
@@ -81,7 +81,10 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpPut("{cartId}")]
-        public async Task<ActionResult<CartDTO>> UpdateCart([FromRoute] int cartId, CartDTO cart)
+        public async Task<ActionResult<CartDtoReturnResult>> UpdateCart(
+            [FromRoute] int cartId,
+            CartDTO cart
+        )
         {
             var response = await _cartService.UpdateCart(cartId, cart);
             if (response == null)

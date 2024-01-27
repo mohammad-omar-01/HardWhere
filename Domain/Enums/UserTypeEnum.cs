@@ -3,6 +3,7 @@
     public enum UserTypeEnum
     {
         Viewer,
-        Customer
+        Customer,
+        Admin
     }
 }

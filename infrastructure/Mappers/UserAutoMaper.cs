@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.ProductDTO;
 using Application.DTOs.User;
+using Application.DTOs.UserType;
 using Application.DTOsNS;
 using Application.DTOsNS.image;
 using Application.DTOsNS.UserType;
@@ -19,6 +20,9 @@ namespace Application.Mappers
             CreateMap<User, CustomerDTO>();
             CreateMap<CustomerDTO, User>();
             CreateMap<User, ViewerDTO>();
+            CreateMap<User, PersonalInformationDTO>().ReverseMap();
+            CreateMap<BillingAdressDTO, Address>().ReverseMap();
+            CreateMap<ShippingAdressDTO, Address>().ReverseMap();
             CreateMap<ViewerDTO, User>();
             CreateMap<CategoeryDTO, ProductCategory>();
             CreateMap<ProductCategory, CategoeryDTO>()

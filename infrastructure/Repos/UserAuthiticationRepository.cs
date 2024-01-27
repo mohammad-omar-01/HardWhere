@@ -25,6 +25,7 @@ namespace infrastructure.Repos
             address.user = addedUser.Entity;
             _dbContext.Addresses.Add(address);
             _dbContext.SaveChanges();
+
             return user;
         }
 

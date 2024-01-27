@@ -1,11 +1,9 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.Product;
 using Application.DTOs.ProductDTO;
 using Application.Repositories;
 using Application.Utilities;
 using Domain.Enums;
 using Domain.ProductNS;
-using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 
 namespace Application.Services.ProductServiceNS
 {
@@ -121,6 +119,34 @@ namespace Application.Services.ProductServiceNS
             var response = await _productRepository.GetProductsFromCategoryAsync(CategoeryId);
 
             return response.ToList();
+        }
+
+        public Task<bool> UpdateProductImages(ProductUpdateImageDTO product)
+        {
+            var mainImagePath = "";
+            if (product.MainImage != null)
+            {
+                mainImagePath = _fileService.SaveImage(product.MainImage).Item2;
+            }
+
+            List<string> images = new List<string>();
+            if (product.GalleryImages != null)
+            {
+                product.GalleryImages.ForEach(image =>
+                {
+                    string path = _fileService.SaveImage(image).Item2;
+                    if (path != null)
+                    {
+                        images.Add(path);
+                    }
+                });
+            }
+            return _productRepository.UpdateProductImageAsync(mainImagePath, images, product.Id);
+        }
+
+        public Task<bool> DeleteProductById(int ProductId)
+        {
+            return _productRepository.DeleteProductById(ProductId);
         }
     }
 }

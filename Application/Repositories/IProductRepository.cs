@@ -1,4 +1,5 @@
-﻿using Application.DTOs.ProductDTO;
+﻿using Application.DTOs.Product;
+using Application.DTOs.ProductDTO;
 using Domain.ProductNS;
 
 namespace Application.Repositories
@@ -12,12 +13,13 @@ namespace Application.Repositories
 
         public Task<SimpleProductDTO> GetProductAsync(int ProductId);
         public Task<SimpleProductDTO> GetProductAsyncBySlugName(string slugName);
-
         public Task<Product> AddProductAsync(Product product);
         public Task<Product> UpdateProductAsync(Product product);
+        public Task<bool> DeleteProductById(int ProductId);
         public Task<Product> AddProductToGategoeryByNameAsync(
             Product product,
             IEnumerable<string> Categories
         );
+        public Task<bool> UpdateProductImageAsync(string Mainimage, List<string> Gimages, int id);
     }
 }

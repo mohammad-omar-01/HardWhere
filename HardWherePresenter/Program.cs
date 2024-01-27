@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Stripe;
 using System.Security.Cryptography;
@@ -142,6 +143,7 @@ builder.Services.AddAuthorization(auth =>
             .RequireAuthenticatedUser()
             .Build()
     );
+    auth.AddPolicy("Admin", policy => policy.RequireRole("Admin"));
 });
 
 var app = builder.Build();

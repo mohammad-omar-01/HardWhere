@@ -14,7 +14,7 @@ namespace Domain.CartNS
         public int quantity { get; set; }
 
         public string slug { get; set; } = string.Empty;
-        public int price { get; set; }
+        public double price { get; set; }
 
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }

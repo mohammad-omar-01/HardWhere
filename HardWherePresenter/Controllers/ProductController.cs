@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Text;
 using Application.DTOs.ProductDTO;
 using HardWhere.Application.Product.Validators;
+using Application.DTOs.Product;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -146,6 +149,31 @@ namespace HardWherePresenter.Controllers
             {
                 return BadRequest(validationResult.Errors);
             }
+        }
+
+        [HttpPatch("Images")]
+        public async Task<IActionResult> UpdateProductImages(
+            [FromForm] ProductUpdateImageDTO product
+        )
+        {
+            var response = await _productService.UpdateProductImages(product);
+            if (response != false)
+            {
+                return Ok("Product Has been Updated ");
+            }
+            return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<bool>> DeleteProduct(int id)
+        {
+            var response = await _productService.DeleteProductById(id);
+            if (response != false)
+            {
+                return NoContent();
+            }
+            return NotFound();
         }
     }
 }

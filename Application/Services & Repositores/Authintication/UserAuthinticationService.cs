@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.User;
+using Application.DTOs.UserType;
 using Application.Repositories;
 using Application.Utilities;
 using Domain.UserNS;
@@ -45,7 +46,7 @@ namespace Application.Services.Authintication
             var user = _userRepository.GetUserByUserName(_user.UserName);
             if (user == null)
             {
-                return null;
+                return LoginCasesEnum.INVALID_USERNAME.ToString();
             }
             if (
                 user.Password != null
@@ -58,7 +59,7 @@ namespace Application.Services.Authintication
                 return token;
             }
 
-            return null;
+            return LoginCasesEnum.INVALID_PASSWORD.ToString();
         }
 
         public bool Logout(LogoutRequestDTO logoutRequest)

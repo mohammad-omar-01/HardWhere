@@ -1,8 +1,6 @@
 ﻿using Application.DTOs.Order;
 using Application.Repositories;
 using Application.Services.UserInformation;
-using Domain.Enums;
-using Domain.OrderNS;
 using Domain.UserNS;
 
 namespace Application.Services___Repositores.UserInformation

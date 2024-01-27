@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.User;
+using Application.DTOs.UserType;
 using Domain.UserNS;
 using System.Security.Cryptography;
 

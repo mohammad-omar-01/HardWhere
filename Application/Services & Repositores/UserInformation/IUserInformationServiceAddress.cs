@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.Order;
+using Application.DTOs.UserType;
 
 namespace Application.Services.UserInformation
 {

@@ -2,7 +2,7 @@
 {
     public enum UserRole
     {
-        Administrator,
+        Admin,
         Customer,
         Viwer
     }

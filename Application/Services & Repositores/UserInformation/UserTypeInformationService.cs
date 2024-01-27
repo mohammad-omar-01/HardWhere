@@ -1,4 +1,5 @@
 ﻿using Application.DTOs.User;
+using Application.DTOs.UserType;
 using Application.DTOsNS.UserType;
 using Application.Repositories;
 using Domain.UserType;
@@ -12,6 +13,11 @@ namespace Application.Services.UserInformation
         public UserTypeInformationService(IUserInformationRepository userInformationRepository)
         {
             this._userInformationRepository = userInformationRepository;
+        }
+
+        public Task<UserInformationDTO> getUserInfo(string username = "", int id = -1)
+        {
+            return _userInformationRepository.GetUserInformation(username, id);
         }
 
         public async Task<UserTypeDTO> GetUserInformation(UserInfoRequestDTO userInfoRequest)
@@ -46,6 +52,16 @@ namespace Application.Services.UserInformation
                 }
             }
             return userTypeDTO;
+        }
+
+        public Task<PersonalInformationDTO> UpdateUserInfomation(
+            int UserId,
+            PersonalInformationDTO pInformation
+        )
+        {
+            var result = _userInformationRepository.UpdateUserInfomation(UserId, pInformation);
+
+            return Task.FromResult(result);
         }
     }
 }

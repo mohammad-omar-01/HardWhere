@@ -1,9 +1,11 @@
 ﻿using Application.DTOs.Order;
 using Application.DTOs.User;
+using Application.DTOs.UserType;
 using Application.DTOsNS.UserType;
 using Application.Services.UserInformation;
 using Application.Services___Repositores.NotficationNS;
 using Application.Services___Repositores.OrderService;
+using Azure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -40,6 +42,19 @@ namespace HardWherePresenter.Controllers
             return await _userInformationService.GetUserInformation(userInfoRequest);
         }
 
+        [HttpGet("{id}")]
+        [Authorize]
+        public async Task<ActionResult<UserInformationDTO>> GetInformation([FromRoute] int id)
+        {
+            var result = _userInformationService.getUserInfo("", id);
+            var json = JsonConvert.SerializeObject(
+                result,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Ok(json);
+        }
+
         [HttpGet("{id}/Order")]
         public async Task<ActionResult<OrderDtoReturnResultList>> GetAllOrders([FromRoute] int id)
         {
@@ -70,7 +85,7 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpPut("Address/{userId}")]
-        [AllowAnonymous]
+        [Authorize]
         public async Task<ActionResult<AddressReturnResultDTO>> UpdateAddress(
             [FromRoute] int userId,
             [FromBody] AddressDTO address
@@ -80,6 +95,26 @@ namespace HardWherePresenter.Controllers
             if (response == null)
             {
                 return NotFound("No Adressses Found For this User");
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Ok(json);
+        }
+
+        [HttpPut("{userId}/PersonalInfromation")]
+        [Authorize]
+        public async Task<ActionResult<PersonalInformationDTO>> UpdatePersonalInfo(
+            [FromRoute] int userId,
+            [FromBody] PersonalInformationDTO info
+        )
+        {
+            var response = await _userInformationService.UpdateUserInfomation(userId, info);
+            if (response == null)
+            {
+                return NotFound("No Info Found For this User");
             }
             var json = JsonConvert.SerializeObject(
                 response,

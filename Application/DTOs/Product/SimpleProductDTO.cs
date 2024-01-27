@@ -22,18 +22,18 @@ namespace Application.DTOs.ProductDTO
         public string status { get; set; }
         public int? averageRating { get; set; }
 
-        private int _rawPrice;
+        private decimal _rawPrice;
         public string price
         {
             get { return string.Format("₪{0:N2}", _rawPrice); }
-            set { _rawPrice = int.Parse(value); }
+            set { _rawPrice = decimal.Parse(value); }
         }
 
-        private int _rawRegularPrice;
+        private decimal _rawRegularPrice;
         public string rawPrice
         {
             get { return string.Format("₪{0:N2}", _rawRegularPrice); }
-            set { _rawRegularPrice = int.Parse(value); }
+            set { _rawRegularPrice = decimal.Parse(value); }
         }
 
         private int _rawSalePrice;

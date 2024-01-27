@@ -1,5 +1,6 @@
 ﻿using Application.DTOs.Order;
 using Microsoft.AspNetCore.Mvc;
+using Stripe;
 using Stripe.Checkout;
 using Session = Stripe.Checkout.Session;
 using SessionCreateOptions = Stripe.Checkout.SessionCreateOptions;
@@ -105,13 +106,17 @@ namespace HardWherePresenter.Controllers
                     {
                         key = productQuantities["Dc-Motor"];
                     }
-                    if (item.product.name.StartsWith("Ser"))
+                    else if (item.product.name.StartsWith("Ser"))
                     {
                         key = productQuantities["Servo"];
                     }
-                    if (item.product.name.StartsWith("ste"))
+                    else if (item.product.name.StartsWith("ste"))
                     {
                         key = productQuantities["stepper"];
+                    }
+                    else
+                    {
+                        key = item.priceRegular;
                     }
 
                     var lineItem = new SessionLineItemOptions

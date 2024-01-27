@@ -1,4 +1,5 @@
-﻿using Application.DTOs.User;
+﻿using Application;
+using Application.DTOs.User;
 using Application.Services.Authintication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -23,9 +24,13 @@ namespace HardWherePresenter.Controllers
         public IActionResult Login([FromBody] UserSignInDTO loginRequest)
         {
             var token = _userAuthicticateService.Login(loginRequest);
-            if (token == null)
+            if (token == LoginCasesEnum.INVALID_USERNAME.ToString())
             {
-                return BadRequest();
+                return BadRequest(new { Error = "invalid_username" });
+            }
+            else if (token == LoginCasesEnum.INVALID_PASSWORD.ToString())
+            {
+                return BadRequest(new { Error = "incorrect_password" });
             }
             var cookieOptions = new CookieOptions
             {

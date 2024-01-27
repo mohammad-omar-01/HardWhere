@@ -41,7 +41,7 @@ namespace Application.Utilities
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                     }
                 ),
-                Expires = DateTime.UtcNow.AddHours(6),
+                Expires = DateTime.UtcNow.AddMonths(1),
                 Audience = audience,
                 Issuer = issuer,
                 SigningCredentials = new SigningCredentials(
