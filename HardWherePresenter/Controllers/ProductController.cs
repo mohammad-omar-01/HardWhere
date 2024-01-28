@@ -165,7 +165,7 @@ namespace HardWherePresenter.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
+        [Authorize]
         public async Task<ActionResult<bool>> DeleteProduct(int id)
         {
             var response = await _productService.DeleteProductById(id);

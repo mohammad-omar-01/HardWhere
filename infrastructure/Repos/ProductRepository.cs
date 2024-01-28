@@ -21,6 +21,7 @@ namespace infrastructure.Repos
         public async Task<Product> AddProductAsync(Product product)
         {
             var response = _dbContext.Products.Add(product);
+            _dbContext.SaveChanges();
 
             return response.Entity;
         }

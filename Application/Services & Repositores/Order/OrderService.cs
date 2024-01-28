@@ -53,7 +53,7 @@ namespace Application.Services___Repositores.OrderNs
             mailData.EmailBody =
                 $"A new Order Has Been Placed for your this list of Products: \n" + $"{builder} ";
             mailData.EmailSubject = "Your Products are being orderd!!";
-            CreateNotficationForOrder(order.customerId, mailData.EmailBody);
+            CreateNotficationForOrder(order, mailData.EmailBody);
         }
 
         private void MailUserByOrderChange(Order order, string value)
@@ -67,18 +67,21 @@ namespace Application.Services___Repositores.OrderNs
             mailData.EmailSubject = "Order New Status";
         }
 
-        private async void CreateNotficationForOrder(int userId, string value)
+        private async void CreateNotficationForOrder(Order order, string value)
         {
             NotficationDTO notficationDTO = new NotficationDTO();
             notficationDTO.NotficationType = "New Order Status";
-            notficationDTO.NotficationBody = $"Your Order has a New State, it's now {value}";
-            notficationDTO.userId = userId;
+            notficationDTO.NotficationBody =
+                $"Your Order #{order.orderId} has a New State, it's now {value}";
+            notficationDTO.userId = order.customerId;
             notficationDTO.NotficationTitle = "Your order has a new update";
             var notif = await _notficationService.CreateNotfication(notficationDTO);
             var user = "";
             try
             {
-                user = ConnectionMapping<string>._connections[userId.ToString()].LastOrDefault();
+                user = ConnectionMapping<string>._connections[
+                    order.customerId.ToString()
+                ].LastOrDefault();
             }
             catch (Exception ex)
             {
@@ -114,7 +117,7 @@ namespace Application.Services___Repositores.OrderNs
             }
             MailUserByOrderChange(order, value);
             //  _mailService.SendMail(mailData);
-            CreateNotficationForOrder(order.customerId, value);
+            CreateNotficationForOrder(order, value);
             return await _orderRepository.UpdateOrderStatus(id, value);
         }
 

@@ -150,10 +150,10 @@ namespace Application.Services.CartNS
             cartToUpdate.contents.ForEach(a => a.CartId = cartId);
             foreach (var item in cartToUpdate.contents)
             {
-                item.price = int.Parse(
+                item.price = float.Parse(
                     cart.contents.nodes
                         .Where(a => a.key.Equals(item.ProductId.ToString()))
-                        .Select(a => a.priceRegular.Split(".")[0])
+                        .Select(a => a.priceRegular)
                         .FirstOrDefault()
                 );
             }
