@@ -9,8 +9,8 @@ namespace Application.DTOs.Order
     {
         public string total { get; set; } = string.Empty;
         public int userId { get; set; }
-        public double shipptingTotal { get; set; }
-        public double? totalInt { get; set; }
+        public float shipptingTotal { get; set; }
+        public float? totalInt { get; set; }
         public int? shippingAddressId { get; set; }
         public int? billingAddressId { get; set; }
         public List<OrderItem> contents { get; set; }
@@ -21,7 +21,7 @@ namespace Application.DTOs.Order
         public int? quantity { get; set; }
         public string priceRegular { get; set; } = string.Empty;
         public ProductRequestDTO product { get; set; }
-        public double? totalPriceForTheseProducts { get; set; }
+        public float? totalPriceForTheseProducts { get; set; }
     }
 
     public class UserDTOForAdress

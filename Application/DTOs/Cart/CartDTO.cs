@@ -7,7 +7,7 @@ namespace Application.DTOs.Cart
     {
         public string total { get; set; }
         public int userId { get; set; }
-        public double? totalInt { get; set; }
+        public float? totalInt { get; set; }
         public bool? isEmpty { get; set; }
         public CartContents contents { get; set; }
     }
@@ -25,7 +25,7 @@ namespace Application.DTOs.Cart
         public string key { get; set; }
         public string priceRegular { get; set; } = string.Empty;
         public ProductRequestDTO product { get; set; }
-        public double? totalPriceForTheseProducts { get; set; }
+        public float? totalPriceForTheseProducts { get; set; }
     }
 
     public class ProductRequestDTO

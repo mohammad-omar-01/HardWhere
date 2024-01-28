@@ -25,14 +25,13 @@ namespace Domain.OrderNS
         public DateTime orderDate { get; set; } = DateTime.Now;
 
         [Required]
-        public double total { get; set; }
+        public float total { get; set; }
 
-        public double? shippingTotal { get; set; }
+        public float? shippingTotal { get; set; }
 
         [Required]
         public virtual User Customer { get; set; }
         public virtual User? admin { get; set; }
-
         public virtual Address? BillingAdress { get; set; }
         public virtual Address? ShippingAddress { get; set; }
         public virtual List<OrderContents>? contentes { get; set; }

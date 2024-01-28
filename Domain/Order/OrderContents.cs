@@ -16,7 +16,7 @@ namespace Domain.OrderNS
         public int quantity { get; set; }
 
         public string slug { get; set; } = string.Empty;
-        public double price { get; set; }
+        public float price { get; set; }
 
         [ForeignKey(nameof(Product))]
         public int ProductId { get; set; }

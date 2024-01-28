@@ -16,6 +16,7 @@ namespace infrastructure.Repos
         public async Task<Notfication> CreateNewNotfication(Notfication notfication)
         {
             var item = _dbContext.Notfications.Add(notfication).Entity;
+            _dbContext.SaveChanges();
 
             if (item != null)
             {
@@ -32,6 +33,7 @@ namespace infrastructure.Repos
                 var notfications = await _dbContext.Notfications
                     .Include(u => u.User)
                     .Where(n => n.userId == userId)
+                    .OrderByDescending(n => n.NotficationId)
                     .ToListAsync();
                 return notfications;
             }

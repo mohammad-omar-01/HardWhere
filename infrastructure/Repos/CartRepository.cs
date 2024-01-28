@@ -31,6 +31,7 @@ namespace infrastructure.Repos
                 return Task.FromResult(checkCart);
             }
             var addedCart = _dbContext.Carts.Add(cart);
+            _dbContext.SaveChanges();
             return Task.FromResult(addedCart.Entity);
         }
 
