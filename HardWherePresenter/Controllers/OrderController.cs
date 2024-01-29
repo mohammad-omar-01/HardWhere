@@ -51,7 +51,7 @@ namespace HardWherePresenter.Controllers
 
         // POST api/<OrderController>
         [HttpPost]
-        public async Task<ActionResult<OrderDTO>> Post([FromBody] OrderDTO order)
+        public async Task<ActionResult<OrderDtoReturnResult>> Post([FromBody] OrderDTO order)
         {
             var response = await _orderService.AddNewOrder(order);
             var json = JsonConvert.SerializeObject(
