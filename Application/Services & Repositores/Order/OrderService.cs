@@ -6,12 +6,9 @@ using Application.Services___Repositores.Mail;
 using Application.Services___Repositores.NotficationNS;
 using Application.Services___Repositores.OrderService;
 using BasicNotification;
-using Domain.NotficationNS;
 using Domain.OrderNS;
-using Domain.UserNS;
 using HardWherePresenter;
 using Microsoft.AspNetCore.SignalR;
-using Stripe;
 using System.Text;
 
 namespace Application.Services___Repositores.OrderNs
@@ -95,6 +92,7 @@ namespace Application.Services___Repositores.OrderNs
         {
             var _mapper = ApplicationMapper.InitializeAutomapper();
             var orderToAdd = _mapper.Map<Order>(order);
+            orderToAdd.orderStatus = "Processing";
             orderToAdd.orderDate = DateTime.Now;
             orderToAdd = await _orderRepository.AddNewOrder(orderToAdd);
             NotifyUser(orderToAdd);
@@ -104,6 +102,8 @@ namespace Application.Services___Repositores.OrderNs
             return new OrderDtoReturnResult
             {
                 result = orderToReturn,
+                OrderDate = orderToAdd.orderDate.ToShortDateString(),
+                OrderStatus = orderToAdd.orderStatus,
                 OrderId = orderToAdd.orderId
             };
         }

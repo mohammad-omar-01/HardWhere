@@ -20,6 +20,7 @@ namespace infrastructure.Repos
         {
             var user = _mapper.Map<User>(userDTO);
             var addedUser = _dbContext.Users.Add(user);
+            _dbContext.SaveChanges();
             Address address = new Address();
             address.Address1 = string.Empty;
             address.user = addedUser.Entity;

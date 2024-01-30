@@ -9,6 +9,7 @@ namespace Application.Services.ProductServiceNS
         public Task<List<SimpleProductDTO>> GetsimpleProductsInCategoryAsync(int CategoeryId);
         public Task<List<SimpleProductDTO>> GetAll();
         public Task<bool> DeleteProductById(int ProductId);
+        public Task<List<SimpleProductDTO>> GetProductsForUserSeraches(int userId);
 
         public Task<List<SimpleProductDTO>> GetsimpleProductsInByUserId(int UserId);
         public Task<List<SimpleProductDTO>> GetsimpleProductspaginated(

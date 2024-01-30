@@ -99,6 +99,26 @@ namespace infrastructure.Repos
             return productToUpdate;
         }
 
+        public Task<List<SimpleProductDTO>> GetProductsForUserSeraches(int userId)
+        {
+            var userSearches = _dbContext.UserSearch.FirstOrDefault(a => a.userId == userId);
+            if (userSearches == null)
+            {
+                return null;
+            }
+            var listOfProducts = _dbContext.Products
+                .Include(p => p.ProductImage)
+                .AsEnumerable()
+                .Where(
+                    product =>
+                        userSearches.serachKeywords.Any(
+                            keyword => product.Name.ToLower().Contains(keyword.ToLower())
+                        )
+                )
+                .ToList();
+            return Task.FromResult(_mapper.Map<List<SimpleProductDTO>>(listOfProducts));
+        }
+
         public async Task<Product> AddProductToGategoeryByNameAsync(
             Product product,
             IEnumerable<string> Categories

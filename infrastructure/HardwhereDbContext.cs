@@ -3,6 +3,7 @@ using Domain.NotficationNS;
 using Domain.OrderNS;
 using Domain.Payment;
 using Domain.ProductNS;
+using Domain.UserNs;
 using Domain.UserNS;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +24,7 @@ namespace infrastructure
         public DbSet<Cart> Carts { get; set; }
         public DbSet<CartProduct> CartContents { get; set; }
         public DbSet<Notfication> Notfications { get; set; }
-
+        public DbSet<UserSearch> UserSearch { get; set; }
         public DbSet<Order> Orders { get; set; }
 
         public HardwhereDbContext(DbContextOptions<HardwhereDbContext> options)

@@ -11,7 +11,7 @@ namespace Domain.OrderNS
         public int orderId { get; set; }
 
         [Required]
-        public string orderStatus { get; set; } = string.Empty;
+        public string orderStatus { get; set; } = "Processing";
 
         public int customerId { get; set; }
 

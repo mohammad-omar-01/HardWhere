@@ -148,5 +148,10 @@ namespace Application.Services.ProductServiceNS
         {
             return _productRepository.DeleteProductById(ProductId);
         }
+
+        public Task<List<SimpleProductDTO>> GetProductsForUserSeraches(int userId)
+        {
+            return _productRepository.GetProductsForUserSeraches(userId);
+        }
     }
 }
