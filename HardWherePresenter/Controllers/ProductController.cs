@@ -95,6 +95,25 @@ namespace HardWherePresenter.Controllers
             return Content(json, "application/json", Encoding.UTF8);
         }
 
+        [HttpGet("User/{UserId}/Searches")]
+        [Authorize]
+        public async Task<ActionResult<SimpleProductDTO>> GetProductsForUserSeraches(
+            [FromRoute] int UserId
+        )
+        {
+            var response = await _productService.GetProductsForUserSeraches(UserId);
+            if (response == null)
+            {
+                return NoContent();
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Content(json, "application/json", Encoding.UTF8);
+        }
+
         [HttpGet("image")]
         public IActionResult Get()
         {
