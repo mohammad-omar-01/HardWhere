@@ -1,9 +1,13 @@
 ﻿using Application;
+using Application.DTOs;
 using Application.DTOs.User;
 using Application.Services.Authintication;
+using Domain.UserNS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -54,6 +58,43 @@ namespace HardWherePresenter.Controllers
                 return BadRequest("User Already Exists");
             }
             return Ok();
+        }
+
+        [HttpPut("Password")]
+        [Authorize]
+        public IActionResult UpdatePass([FromBody] UpdatePasswordRequest updateRequest)
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId != updateRequest.userId.ToString())
+            {
+                return Forbid();
+            }
+
+            var response = _userAuthicticateService.UpdatePassword(updateRequest);
+
+            if (response == Task.FromResult(false))
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+        [HttpPost("Password")]
+        public IActionResult ForgotPassword([FromBody] ForgetPasswordrequest req)
+        {
+            var response = _userAuthicticateService.ForgotPassword(req.email);
+
+            if (response == Task.FromResult(" "))
+            {
+                return BadRequest();
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Ok(json);
         }
 
         [HttpGet("Logout")]

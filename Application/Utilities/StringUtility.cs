@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,27 @@ namespace Application.Utilities
 {
     public class StringUtility : IStringUtility
     {
+        public string GenerateRandomPassword(int length)
+        {
+            const string CharSet = "0123456789";
+
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                var passwordChars = new char[length];
+                var data = new byte[length];
+
+                rng.GetBytes(data);
+
+                for (int i = 0; i < length; i++)
+                {
+                    int index = data[i] % CharSet.Length;
+                    passwordChars[i] = CharSet[index];
+                }
+
+                return new string(passwordChars);
+            }
+        }
+
         public string HashString(string str)
         {
             using (var sha256 = SHA256.Create())

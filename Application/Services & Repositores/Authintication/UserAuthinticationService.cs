@@ -1,9 +1,11 @@
-﻿using Application.DTOs.User;
-using Application.DTOs.UserType;
+﻿using Application.DTOs;
+using Application.DTOs.User;
 using Application.Repositories;
+using Application.Services___Repositores.Mail;
 using Application.Utilities;
-using Domain.UserNS;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Pkcs;
+using System.Text;
 
 namespace Application.Services.Authintication
 {
@@ -12,16 +14,66 @@ namespace Application.Services.Authintication
         private readonly IUserAuthinticationRepoisitory _userRepository;
         private readonly IStringUtility _stringUtility;
         private readonly ITokenUtility _tokenUtility;
+        private readonly IMailService _mailService;
 
         public UserAuthinticationService(
             IUserAuthinticationRepoisitory userRepository,
             IStringUtility stringUtility,
-            ITokenUtility tokenUtility
+            ITokenUtility tokenUtility,
+            IMailService mailService
         )
         {
             _userRepository = userRepository;
             _stringUtility = stringUtility;
             _tokenUtility = tokenUtility;
+            _mailService = mailService;
+        }
+
+        public Task<string> ForgotPassword(string email)
+        {
+            var user = _userRepository.GetUserByUserEmail(email);
+            if (user == null)
+            {
+                return Task.FromResult("");
+            }
+
+            var randomPasswordCodeGenerated = _stringUtility.GenerateRandomPassword(6);
+
+            MailData data = new MailData();
+            data.EmailSubject = "Retrive your password at HardWhere.ps";
+            data.EmailToName = user.FirstName + " " + user.LastName;
+            data.EmailToId = user.Email;
+
+            StringBuilder emailBody = new StringBuilder();
+
+            emailBody.AppendLine($"Dear {user.UserName},");
+            emailBody.AppendLine();
+            emailBody.AppendLine(
+                "We received a request to reset your password. Your new password is:"
+            );
+            emailBody.AppendLine();
+            emailBody.AppendLine($"{randomPasswordCodeGenerated}");
+            emailBody.AppendLine();
+            emailBody.AppendLine(
+                "Please use this password to log in to your account. For security reasons, we recommend changing your password after logging in."
+            );
+            emailBody.AppendLine();
+            emailBody.AppendLine(
+                "If you did not request a password reset or have any concerns, please contact our support team."
+            );
+            emailBody.AppendLine();
+            emailBody.AppendLine("Thank you,");
+            emailBody.AppendLine("HardWhere.ps Support Team");
+
+            data.EmailBody = emailBody.ToString();
+
+            var isSuccsess = _mailService.SendMail(data);
+            if (isSuccsess)
+            {
+                return Task.FromResult(_stringUtility.HashString(randomPasswordCodeGenerated));
+            }
+
+            return Task.FromResult("");
         }
 
         public bool IsEmailAvaliable(string Email)
@@ -85,6 +137,26 @@ namespace Application.Services.Authintication
             user.Password = _stringUtility.HashString(user.Password);
             _userRepository.SignUpNewUser(user);
             return true;
+        }
+
+        public Task<bool> UpdatePassword(UpdatePasswordRequest request)
+        {
+            var user = _userRepository.GetUserByUserId(request.userId);
+            if (user != null)
+            {
+                if (user.Password.Equals(request.oldPassword))
+                {
+                    user.Password = request.newPassword;
+
+                    _userRepository.UpdateUser(user);
+                    return Task.FromResult(true);
+                }
+                else
+                {
+                    return Task.FromResult(false);
+                }
+            }
+            return Task.FromResult(false);
         }
     }
 }

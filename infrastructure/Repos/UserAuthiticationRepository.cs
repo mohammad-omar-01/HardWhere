@@ -48,5 +48,11 @@ namespace infrastructure.Repos
             _dbContext.SaveChanges(true);
             return user;
         }
+
+        public User GetUserByUserId(int userId)
+        {
+            var user = _dbContext.Users.FirstOrDefault(x => x.Id == userId);
+            return user;
+        }
     }
 }

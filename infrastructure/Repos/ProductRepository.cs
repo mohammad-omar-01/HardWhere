@@ -104,7 +104,7 @@ namespace infrastructure.Repos
             var userSearches = _dbContext.UserSearch.FirstOrDefault(a => a.userId == userId);
             if (userSearches == null)
             {
-                return null;
+                return Task.FromResult(new List<SimpleProductDTO>());
             }
             var listOfProducts = _dbContext.Products
                 .Include(p => p.ProductImage)
