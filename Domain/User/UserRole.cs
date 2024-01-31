@@ -1,8 +1,8 @@
-﻿namespace Domain.User
+﻿namespace Domain.UserNS
 {
     public enum UserRole
     {
-        Administrator,
+        Admin,
         Customer,
         Viwer
     }

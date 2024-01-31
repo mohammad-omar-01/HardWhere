@@ -1,7 +1,7 @@
-﻿using Application.DTOs;
+﻿using Application.DTOs.User;
 using Application.Repositories;
 using AutoMapper;
-using Domain.User;
+using Domain.UserNS;
 
 namespace infrastructure.Repos
 {
@@ -19,8 +19,14 @@ namespace infrastructure.Repos
         public User SignUpNewUser(UserSignUpDTO userDTO)
         {
             var user = _mapper.Map<User>(userDTO);
-            _dbContext.Users.Add(user);
+            var addedUser = _dbContext.Users.Add(user);
             _dbContext.SaveChanges();
+            Address address = new Address();
+            address.Address1 = string.Empty;
+            address.user = addedUser.Entity;
+            _dbContext.Addresses.Add(address);
+            _dbContext.SaveChanges();
+
             return user;
         }
 
@@ -40,6 +46,12 @@ namespace infrastructure.Repos
         {
             _dbContext.Users.Update(user);
             _dbContext.SaveChanges(true);
+            return user;
+        }
+
+        public User GetUserByUserId(int userId)
+        {
+            var user = _dbContext.Users.FirstOrDefault(x => x.Id == userId);
             return user;
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Application.DTOs.image
+﻿namespace Application.DTOsNS.image
 {
     public class CategoeryImageDTO
     {

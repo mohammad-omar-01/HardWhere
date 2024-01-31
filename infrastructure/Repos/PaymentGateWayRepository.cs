@@ -1,5 +1,4 @@
 ﻿using Application.Repositories;
-using AutoMapper;
 using Domain.Payment;
 
 namespace infrastructure.Repos
