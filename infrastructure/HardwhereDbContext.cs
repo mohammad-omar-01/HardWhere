@@ -43,7 +43,7 @@ namespace infrastructure
             if (!optionsBuilder.IsConfigured)
             {
                 optionsBuilder.UseNpgsql(
-                    "User Id=postgres;Password=321HardWhere.ps@;Server=db.hctgicuvarolobizspdr.supabase.co;Port=5432;Database=postgres"
+                    "User Id=postgres.hctgicuvarolobizspdr;Password=321HardWhere.ps@;Server=aws-0-eu-central-1.pooler.supabase.com;Port=5432;Database=postgres"
                 );
             }
         }

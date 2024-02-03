@@ -96,7 +96,7 @@ namespace Application.Services___Repositores.OrderNs
             orderToAdd.orderDate = DateTime.Now;
             orderToAdd = await _orderRepository.AddNewOrder(orderToAdd);
             NotifyUser(orderToAdd);
-            //    _mailService.SendMail(mailData);
+            _mailService.SendMail(mailData);
             var orderToReturn = _mapper.Map<OrderDTO>(orderToAdd);
 
             return new OrderDtoReturnResult
@@ -116,7 +116,7 @@ namespace Application.Services___Repositores.OrderNs
                 return false;
             }
             MailUserByOrderChange(order, value);
-            //  _mailService.SendMail(mailData);
+            _mailService.SendMail(mailData);
             CreateNotficationForOrder(order, value);
             return await _orderRepository.UpdateOrderStatus(id, value);
         }

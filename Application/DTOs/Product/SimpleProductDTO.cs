@@ -1,8 +1,6 @@
 ﻿using Application.DTOsNS;
 using Domain.Enums;
 using Domain.ProductNS;
-using static System.Net.Mime.MediaTypeNames;
-using System.Reflection.Emit;
 
 namespace Application.DTOs.ProductDTO
 {
@@ -21,6 +19,9 @@ namespace Application.DTOs.ProductDTO
         public string shortDescription { get; set; }
         public string status { get; set; }
         public int? averageRating { get; set; }
+
+        public string prdouctApprovalStatus { get; set; } =
+            PrdouctApprovalStatus.APPROVED.ToString();
 
         private decimal _rawPrice;
         public string price

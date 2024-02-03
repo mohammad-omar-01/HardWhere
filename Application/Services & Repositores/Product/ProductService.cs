@@ -1,9 +1,15 @@
-﻿using Application.DTOs.Product;
+﻿using Application.DTOs.Notfication;
+using Application.DTOs.Product;
 using Application.DTOs.ProductDTO;
 using Application.Repositories;
+using Application.Services___Repositores.NotficationNS;
 using Application.Utilities;
+using BasicNotification;
 using Domain.Enums;
 using Domain.ProductNS;
+using HardWherePresenter;
+using Microsoft.AspNetCore.SignalR;
+using System.Drawing.Printing;
 
 namespace Application.Services.ProductServiceNS
 {
@@ -11,20 +17,28 @@ namespace Application.Services.ProductServiceNS
     {
         private readonly IProductRepository _productRepository;
         private readonly IFileService _fileService;
+        INotficationService _notficationService;
+
         private readonly IStringRandomGenarotor<SlugGenerator> _slugGenerator;
+        IHubContext<NotificationHub, IClientNotificationHub> _hubContext;
+
         private readonly IStringRandomGenarotor<SKUGenerator> _skuGenerator;
 
         public ProductService(
             IProductRepository productRepository,
             IFileService fileService,
             IStringRandomGenarotor<SlugGenerator> slug,
-            IStringRandomGenarotor<SKUGenerator> sku
+            IStringRandomGenarotor<SKUGenerator> sku,
+            IHubContext<NotificationHub, IClientNotificationHub> hubContext,
+            INotficationService notficationService
         )
         {
             _productRepository = productRepository;
             _fileService = fileService;
             _slugGenerator = slug;
             _skuGenerator = sku;
+            _hubContext = hubContext;
+            _notficationService = notficationService;
         }
 
         public async Task<Product> AddNewProduct(NewProductRequestDTO product)
@@ -152,6 +166,74 @@ namespace Application.Services.ProductServiceNS
         public Task<List<SimpleProductDTO>> GetProductsForUserSeraches(int userId)
         {
             return _productRepository.GetProductsForUserSeraches(userId);
+        }
+
+        public async Task<List<AdminProductDTO>> GetAllAdmin()
+        {
+            var result = await _productRepository.GetAllProductsAdmin();
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
+        }
+
+        public async Task<List<AdminProductDTO>> GetsimpleProductspaginatedAdmin(
+            int pageNumber,
+            int pageSize
+        )
+        {
+            var result = await _productRepository.GetAllProductsPaginationAdmin(
+                pageNumber,
+                pageSize
+            );
+            if (result == null)
+            {
+                return null;
+            }
+            return result;
+        }
+
+        private async void NotfiyProductOwnerAboutNewProductsState(
+            int userId,
+            string productName,
+            string status
+        )
+        {
+            NotficationDTO notficationDTO = new NotficationDTO();
+            notficationDTO.NotficationType = "New Product Status";
+            notficationDTO.NotficationBody =
+                $"Your Product {productName} has a new Status, it's now {status}";
+            notficationDTO.userId = userId;
+            notficationDTO.NotficationTitle = $"Your {productName} has a new update";
+            var notif = await _notficationService.CreateNotfication(notficationDTO);
+            var user = "";
+            try
+            {
+                user = ConnectionMapping<string>._connections[userId.ToString()].LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+                user = "";
+            }
+
+            await _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
+        }
+
+        public Task<bool> ChnageProductStatusByAdmin(int productId, string status)
+        {
+            var response = _productRepository.ChnageProductStatusByAdmin(productId, status);
+            if (response == null)
+            {
+                return Task.FromResult(false);
+            }
+            NotfiyProductOwnerAboutNewProductsState(
+                response.Result.UserID,
+                response.Result.Name,
+                status
+            );
+
+            return Task.FromResult(true);
         }
     }
 }

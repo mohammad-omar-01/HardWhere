@@ -35,6 +35,7 @@ namespace Application.DTOs.Cart
         public string slug { get; set; }
         public string price { get; set; }
         public string priceRegular { get; set; } = "0";
+        public int stockQuantity { get; set; } = 0;
         public ProductImageDTO productImage { get; set; }
     }
 

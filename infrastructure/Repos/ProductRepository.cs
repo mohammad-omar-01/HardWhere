@@ -1,4 +1,5 @@
-﻿using Application.DTOs.ProductDTO;
+﻿using Application.DTOs.Product;
+using Application.DTOs.ProductDTO;
 using Application.Repositories;
 using AutoMapper;
 using Domain.ProductNS;
@@ -61,6 +62,7 @@ namespace infrastructure.Repos
                 .Include(p => p.GalleryImages)
                 .Include(p => p.Categories)
                 .Include(p => p.ProductImage)
+                .Where(p => p.prdouctApprovalStatus == Domain.Enums.PrdouctApprovalStatus.APPROVED)
                 .ToListAsync();
             if (productsInCategory.Count == 0)
             {
@@ -104,7 +106,7 @@ namespace infrastructure.Repos
             var userSearches = _dbContext.UserSearch.FirstOrDefault(a => a.userId == userId);
             if (userSearches == null)
             {
-                return null;
+                return Task.FromResult(new List<SimpleProductDTO>());
             }
             var listOfProducts = _dbContext.Products
                 .Include(p => p.ProductImage)
@@ -115,6 +117,7 @@ namespace infrastructure.Repos
                             keyword => product.Name.ToLower().Contains(keyword.ToLower())
                         )
                 )
+                .Where(p => p.prdouctApprovalStatus == Domain.Enums.PrdouctApprovalStatus.APPROVED)
                 .ToList();
             return Task.FromResult(_mapper.Map<List<SimpleProductDTO>>(listOfProducts));
         }
@@ -170,6 +173,49 @@ namespace infrastructure.Repos
             }
         }
 
+        public Task<List<int>> GetUseresIdToNotfiyByAdminChangeStatusOfProduct(
+            Product productToChange,
+            string status
+        )
+        {
+            var usersToNotfiy = _dbContext.UserSearch
+                .Where(
+                    user =>
+                        user.serachKeywords.Any(
+                            keyword => productToChange.Name.ToLower().Contains(keyword.ToLower())
+                        )
+                )
+                .Select(a => a.userId)
+                .ToList();
+            return Task.FromResult(usersToNotfiy);
+        }
+
+        public Task<Product> ChnageProductStatusByAdmin(int productId, string status)
+        {
+            var productToChange = _dbContext.Products.FirstOrDefault(a => a.ProductId == productId);
+            if (productToChange == null)
+            {
+                return null;
+            }
+            var Status = Domain.Enums.PrdouctApprovalStatus.PENDING;
+
+            if (
+                Domain.Enums.PrdouctApprovalStatus.TryParse(
+                    status,
+                    true,
+                    out Domain.Enums.PrdouctApprovalStatus parsedStatus
+                )
+            )
+            {
+                Status = parsedStatus;
+            }
+
+            productToChange.prdouctApprovalStatus = Status;
+            _dbContext.SaveChanges();
+
+            return Task.FromResult(productToChange);
+        }
+
         public async Task<List<SimpleProductDTO>> GetAllProducts()
         {
             try
@@ -179,7 +225,7 @@ namespace infrastructure.Repos
                     .Include(p => p.Categories)
                     .Include(p => p.ProductImage)
                     .Where(
-                        p => p.prdouctApprovalStatus == Domain.Enums.PrdouctApprovalStatus.Approved
+                        p => p.prdouctApprovalStatus == Domain.Enums.PrdouctApprovalStatus.APPROVED
                     )
                     .ToListAsync();
 
@@ -190,6 +236,28 @@ namespace infrastructure.Repos
                 else
                 {
                     return _mapper.Map<List<SimpleProductDTO>>(products);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+        }
+
+        public async Task<List<AdminProductDTO>> GetAllProductsAdmin()
+        {
+            try
+            {
+                var products = await _dbContext.Products.Include(a => a.Categories).ToListAsync();
+
+                if (products == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return _mapper.Map<List<AdminProductDTO>>(products);
                 }
             }
             catch (Exception ex)
@@ -245,6 +313,7 @@ namespace infrastructure.Repos
                 .Include(p => p.Categories)
                 .Include(p => p.ProductImage)
                 .OrderBy(b => b.ProductId)
+                .Where(p => p.prdouctApprovalStatus == Domain.Enums.PrdouctApprovalStatus.APPROVED)
                 .Skip(recordsToSkip)
                 .Take(pageSize)
                 .ToListAsync();
@@ -262,6 +331,22 @@ namespace infrastructure.Repos
                 return Task.FromResult(true);
             }
             return Task.FromResult(false);
+        }
+
+        public async Task<List<AdminProductDTO>> GetAllProductsPaginationAdmin(
+            int pageNumber,
+            int pageSize
+        )
+        {
+            int recordsToSkip = (pageNumber - 1) * pageSize;
+
+            var paginatedProducts = await _dbContext.Products
+                .Include(a => a.Categories)
+                .Skip(recordsToSkip)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return _mapper.Map<List<AdminProductDTO>>(paginatedProducts);
         }
     }
 }

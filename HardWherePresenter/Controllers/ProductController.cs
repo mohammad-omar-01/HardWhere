@@ -39,10 +39,23 @@ namespace HardWherePresenter.Controllers
             return Content(json, "application/json", Encoding.UTF8);
         }
 
-        [HttpGet("")]
+        [HttpGet]
         public async Task<ActionResult<List<SimpleProductDTO>>> GetAll()
         {
             var response = await _productService.GetAll();
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Content(json, "application/json", Encoding.UTF8);
+        }
+
+        [HttpGet("v2")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<SimpleProductDTO>>> GetAllAdmin()
+        {
+            var response = await _productService.GetAllAdmin();
             var json = JsonConvert.SerializeObject(
                 response,
                 Formatting.Indented,
@@ -58,6 +71,25 @@ namespace HardWherePresenter.Controllers
         )
         {
             var response = await _productService.GetsimpleProductspaginated(pageNumber, pageSize);
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Content(json, "application/json", Encoding.UTF8);
+        }
+
+        [HttpGet("Paginated/v2")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<List<AdminProductDTO>>> GetProductsByPageAdmin(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 3
+        )
+        {
+            var response = await _productService.GetsimpleProductspaginatedAdmin(
+                pageNumber,
+                pageSize
+            );
             var json = JsonConvert.SerializeObject(
                 response,
                 Formatting.Indented,

@@ -8,8 +8,8 @@
 
     public enum PrdouctApprovalStatus
     {
-        Approved,
-        Pending,
-        Rejected
+        APPROVED,
+        PENDING,
+        REJECTED
     }
 }

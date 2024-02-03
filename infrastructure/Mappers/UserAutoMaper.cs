@@ -1,4 +1,5 @@
-﻿using Application.DTOs.ProductDTO;
+﻿using Application.DTOs.Product;
+using Application.DTOs.ProductDTO;
 using Application.DTOs.User;
 using Application.DTOs.UserType;
 using Application.DTOsNS;
@@ -25,11 +26,27 @@ namespace Application.Mappers
             CreateMap<ShippingAdressDTO, Address>().ReverseMap();
             CreateMap<ViewerDTO, User>();
             CreateMap<CategoeryDTO, ProductCategory>();
+
             CreateMap<ProductCategory, CategoeryDTO>()
                 .ForMember(dest => dest.databaseId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.image, opt => opt.MapFrom(src => src.CategoryImage));
+            CreateMap<ProductCategory, CategoeryDTOAdmin>()
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name));
             CreateMap<CategoreyImage, CategoeryImageDTO>();
             CreateMap<CategoeryImageDTO, CategoreyImage>();
+            CreateMap<Product, AdminProductDTO>()
+                .ForMember(dest => dest.databaseId, opt => opt.MapFrom(src => src.ProductId))
+                .ForMember(dest => dest.price, opt => opt.MapFrom(src => src.RawPrice))
+                .ForMember(dest => dest.stockQuantity, opt => opt.MapFrom(src => src.StockQuantity))
+                .ForMember(
+                    dest => dest.prdouctApprovalStatus,
+                    opt => opt.MapFrom(src => src.prdouctApprovalStatus.ToString())
+                )
+                .ForMember(
+                    dest => dest.productCategories,
+                    opt => opt.MapFrom(src => src.Categories)
+                )
+                .ForMember(dest => dest.name, opt => opt.MapFrom(src => src.Name.ToString()));
 
             CreateMap<Product, SimpleProductDTO>()
                 .ForMember(dest => dest.databaseId, opt => opt.MapFrom(src => src.ProductId))
@@ -41,6 +58,10 @@ namespace Application.Mappers
                 .ForMember(dest => dest.stockStatus, opt => opt.MapFrom(src => src.StockStatus))
                 .ForMember(dest => dest.status, opt => opt.MapFrom(src => src.Status))
                 .ForMember(dest => dest.stockQuantity, opt => opt.MapFrom(src => src.StockQuantity))
+                .ForMember(
+                    dest => dest.prdouctApprovalStatus,
+                    opt => opt.MapFrom(src => src.prdouctApprovalStatus.ToString())
+                )
                 .ForMember(
                     dest => dest.rawDescription,
                     opt => opt.MapFrom(src => src.RawDescription)

@@ -7,6 +7,9 @@ namespace Application.Repositories
     {
         User SignUpNewUser(UserSignUpDTO user);
         User GetUserByUserName(string userName);
+
+        User GetUserByUserId(int userId);
+
         User GetUserByUserEmail(string email);
         User UpdateUser(User user);
     }
