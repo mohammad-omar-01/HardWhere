@@ -5,6 +5,7 @@ using Application.Services.Authintication;
 using Domain.UserNS;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Security.Claims;
@@ -53,7 +54,7 @@ namespace HardWherePresenter.Controllers
         public IActionResult SignUp([FromBody] UserSignUpDTO userSignUpRequest)
         {
             var response = _userAuthicticateService.SignUp(userSignUpRequest);
-            if (response == false)
+            if (response != true)
             {
                 return BadRequest("User Already Exists");
             }
@@ -97,7 +98,7 @@ namespace HardWherePresenter.Controllers
         {
             var response = _userAuthicticateService.ForgotPassword(req.email);
 
-            if (response == Task.FromResult(" "))
+            if (response == Task.FromResult(" ") || response.ToString().IsNullOrEmpty())
             {
                 return BadRequest();
             }

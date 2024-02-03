@@ -1,4 +1,4 @@
-﻿namespace Domain.Product
+﻿namespace Domain.ProductNS
 {
     public enum ProductStatusEnum
     {

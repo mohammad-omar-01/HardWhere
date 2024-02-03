@@ -220,6 +220,33 @@ namespace Application.Services.ProductServiceNS
             await _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
         }
 
+        private async void NotfiyUsersAboutNewProducts(
+            int userId,
+            string productName,
+            string status
+        )
+        {
+            NotficationDTO notficationDTO = new NotficationDTO();
+            notficationDTO.NotficationType = "Product You May Like";
+            notficationDTO.NotficationBody =
+                $"Check this new Product that has just been added, be the first one to have it";
+            notficationDTO.NotficationTitle = $"We have a new Product for you, Check it Now :)";
+
+            notficationDTO.userId = userId;
+            var notif = await _notficationService.CreateNotfication(notficationDTO);
+            var user = "";
+            try
+            {
+                user = ConnectionMapping<string>._connections[userId.ToString()].LastOrDefault();
+            }
+            catch (Exception ex)
+            {
+                user = "";
+            }
+
+            await _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
+        }
+
         public Task<bool> ChnageProductStatusByAdmin(int productId, string status)
         {
             var response = _productRepository.ChnageProductStatusByAdmin(productId, status);
