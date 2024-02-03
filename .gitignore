@@ -11,6 +11,7 @@
 *.userosscache
 *.sln.docstates
 
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
  Bazar.sln
@@ -20,6 +21,7 @@
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+Uploads/
 x64/
 x86/
 bld/
