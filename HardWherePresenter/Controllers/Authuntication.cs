@@ -80,7 +80,19 @@ namespace HardWherePresenter.Controllers
             return Ok();
         }
 
-        [HttpPost("Password")]
+        [HttpPut("ChangePassword")]
+        public IActionResult UpdatePassDirect([FromBody] UpdatePasswordRequestDirect updateRequest)
+        {
+            var response = _userAuthicticateService.UpdatePasswordDirectly(updateRequest);
+
+            if (response == Task.FromResult(false))
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
+        [HttpPost("ForgotPassword")]
         public IActionResult ForgotPassword([FromBody] ForgetPasswordrequest req)
         {
             var response = _userAuthicticateService.ForgotPassword(req.email);

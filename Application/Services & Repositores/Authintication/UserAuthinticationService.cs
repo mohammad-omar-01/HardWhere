@@ -158,5 +158,19 @@ namespace Application.Services.Authintication
             }
             return Task.FromResult(false);
         }
+
+        public Task<bool> UpdatePasswordDirectly(UpdatePasswordRequestDirect request)
+        {
+            var user = _userRepository.GetUserByUserEmail(request.email);
+            if (user != null)
+            {
+                user.Password = (request.newPassword);
+
+                _userRepository.UpdateUser(user);
+                return Task.FromResult(true);
+            }
+
+            return Task.FromResult(false);
+        }
     }
 }

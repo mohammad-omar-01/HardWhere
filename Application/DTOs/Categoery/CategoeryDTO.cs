@@ -10,4 +10,10 @@ namespace Application.DTOsNS
         public int count { get; set; }
         public CategoeryImageDTO image { get; set; }
     }
+
+    public class CategoeryDTOAdmin
+    {
+        public int databaseId { get; set; }
+        public string name { get; set; }
+    }
 }

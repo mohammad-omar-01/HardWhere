@@ -73,6 +73,10 @@ namespace Application
                         dest => dest.CartProductName,
                         opt => opt.MapFrom(src => src.product.name)
                     )
+                    .ForMember(
+                        dest => dest.stockQuantity,
+                        opt => opt.MapFrom(src => src.product.stockQuantity)
+                    )
                     .ForMember(dest => dest.quantity, opt => opt.MapFrom(src => src.quantity))
                     .ForMember(
                         dest => dest.price,

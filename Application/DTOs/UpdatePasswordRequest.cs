@@ -6,4 +6,10 @@
         public string oldPassword { get; set; } = string.Empty;
         public string newPassword { get; set; } = string.Empty;
     }
+
+    public class UpdatePasswordRequestDirect
+    {
+        public string email { get; set; } = string.Empty;
+        public string newPassword { get; set; } = string.Empty;
+    }
 }

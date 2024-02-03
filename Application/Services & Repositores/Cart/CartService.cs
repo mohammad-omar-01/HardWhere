@@ -106,6 +106,7 @@ namespace Application.Services.CartNS
                                     price = "₪" + item.price.ToString(),
                                     priceRegular = item.price.ToString(),
                                     slug = "",
+                                    stockQuantity = item.stockQuantity,
                                     productImage =
                                         item.ProductImage != null
                                             ? new ProductImageDTO { sourceUrl = item.ProductImage }

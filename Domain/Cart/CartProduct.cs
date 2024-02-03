@@ -12,7 +12,7 @@ namespace Domain.CartNS
         public int CartId { get; set; }
         public string CartProductName { get; set; } = string.Empty;
         public int quantity { get; set; }
-
+        public int stockQuantity { get; set; }
         public string slug { get; set; } = string.Empty;
         public float price { get; set; }
 

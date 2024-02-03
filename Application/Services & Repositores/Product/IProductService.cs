@@ -8,6 +8,14 @@ namespace Application.Services.ProductServiceNS
     {
         public Task<List<SimpleProductDTO>> GetsimpleProductsInCategoryAsync(int CategoeryId);
         public Task<List<SimpleProductDTO>> GetAll();
+        public Task<List<AdminProductDTO>> GetAllAdmin();
+        public Task<bool> ChnageProductStatusByAdmin(int productId, string status);
+
+        public Task<List<AdminProductDTO>> GetsimpleProductspaginatedAdmin(
+            int pageNumber,
+            int pageSize
+        );
+
         public Task<bool> DeleteProductById(int ProductId);
         public Task<List<SimpleProductDTO>> GetProductsForUserSeraches(int userId);
 
