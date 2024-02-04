@@ -18,6 +18,9 @@ namespace infrastructure.Repos
         public async Task<Order> AddNewOrder(Order order)
         {
             var orderToAdd = await _dbContext.Orders.AddAsync(order);
+            orderToAdd.Entity.contentes.ForEach(
+                a => a.product = _dbContext.Products.FirstOrDefault(b => b.ProductId == a.ProductId)
+            );
             var address = await _dbContext.Addresses.FirstOrDefaultAsync(
                 a => a.AddressID == order.BillingAddressId
             );

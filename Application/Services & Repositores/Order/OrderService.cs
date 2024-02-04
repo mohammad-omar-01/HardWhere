@@ -50,7 +50,7 @@ namespace Application.Services___Repositores.OrderNs
             mailData.EmailBody =
                 $"A new Order Has Been Placed for your this list of Products: \n" + $"{builder} ";
             mailData.EmailSubject = "Your Products are being orderd!!";
-            CreateNotficationForOrder(order, mailData.EmailBody);
+            CreateNotficationForProductOwner(order);
         }
 
         private void MailUserByOrderChange(Order order, string value)
@@ -62,6 +62,37 @@ namespace Application.Services___Repositores.OrderNs
                 order.BillingAdress.user.FirstName + " " + order.BillingAdress.user.LastName;
             mailData.EmailBody = $"Your Order is : \n" + $"{value} ";
             mailData.EmailSubject = "Order New Status";
+        }
+
+        private async void CreateNotficationForProductOwner(Order order)
+        {
+            NotficationDTO notficationDTO = new NotficationDTO();
+            notficationDTO.NotficationType = "Your Products are being orderd";
+            StringBuilder builder = new StringBuilder();
+            order.contentes.ForEach(a =>
+            {
+                builder.Append(a.OrderProductName);
+                builder.AppendLine();
+                notficationDTO.NotficationBody =
+                    $"A new Order Has Been Placed for your this list of Products: \n"
+                    + $"{builder} ";
+                notficationDTO.NotficationTitle = "Your order has a new update";
+                notficationDTO.userId = a.product.UserID;
+                var notif = _notficationService.CreateNotfication(notficationDTO).Result;
+                var user = "";
+                try
+                {
+                    user = ConnectionMapping<string>._connections[
+                        a.product.UserID.ToString()
+                    ].LastOrDefault();
+                }
+                catch (Exception ex)
+                {
+                    user = "";
+                }
+
+                _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
+            });
         }
 
         private async void CreateNotficationForOrder(Order order, string value)
@@ -96,7 +127,6 @@ namespace Application.Services___Repositores.OrderNs
             orderToAdd.orderDate = DateTime.Now;
             orderToAdd = await _orderRepository.AddNewOrder(orderToAdd);
             NotifyUser(orderToAdd);
-            _mailService.SendMail(mailData);
             var orderToReturn = _mapper.Map<OrderDTO>(orderToAdd);
 
             return new OrderDtoReturnResult

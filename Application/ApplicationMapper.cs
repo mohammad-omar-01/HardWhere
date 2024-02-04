@@ -198,6 +198,7 @@ namespace Application
                         dest => dest.OrderProductName,
                         opt => opt.MapFrom(src => src.product.name)
                     )
+                    .ForMember(dest => dest.product, opt => opt.Ignore())
                     .ForMember(dest => dest.slug, opt => opt.MapFrom(src => src.product.slug))
                     .ForMember(
                         dest => dest.ProductId,

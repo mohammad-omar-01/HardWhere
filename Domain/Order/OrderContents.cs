@@ -22,5 +22,6 @@ namespace Domain.OrderNS
         public int ProductId { get; set; }
         public string? ProductImage { get; set; } = string.Empty;
         public virtual Order order { get; set; }
+        public virtual Product product { get; set; }
     }
 }
