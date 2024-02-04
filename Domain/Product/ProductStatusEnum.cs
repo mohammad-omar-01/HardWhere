@@ -2,8 +2,7 @@
 {
     public enum ProductStatusEnum
     {
-        PUBLISH,
-        PENDING,
-        DELETED
+        NEW,
+        USED,
     }
 }

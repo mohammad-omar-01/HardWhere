@@ -8,6 +8,9 @@ namespace Application.Repositories
     {
         public Task<List<SimpleProductDTO>> GetProductsFromCategoryAsync(int CategoeryId);
         public Task<List<SimpleProductDTO>> GetProductsByUserId(int UserId);
+        public Task<List<int>> GetUseresIdToNotfiyByAdminChangeStatusOfProduct(
+            Product productToChange
+        );
         public Task<Product> ChnageProductStatusByAdmin(int productId, string status);
 
         public Task<List<SimpleProductDTO>> GetAllProducts();

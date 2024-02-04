@@ -98,6 +98,23 @@ namespace HardWherePresenter.Controllers
             return Content(json, "application/json", Encoding.UTF8);
         }
 
+        [HttpPatch("{id}/Status")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> PatchStatus(int id, [FromBody] string value)
+        {
+            var response = await _productService.ChnageProductStatusByAdmin(id, value);
+            if (response == false)
+            {
+                return BadRequest(response);
+            }
+            var json = JsonConvert.SerializeObject(
+                response,
+                Formatting.Indented,
+                new JsonSerializerSettings { ReferenceLoopHandling = ReferenceLoopHandling.Ignore }
+            );
+            return Ok(json);
+        }
+
         [HttpGet("{productId}")]
         public async Task<ActionResult<SimpleProductDTO>> GetProduct([FromRoute] int productId)
         {

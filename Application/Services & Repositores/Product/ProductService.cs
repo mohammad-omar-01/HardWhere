@@ -7,6 +7,7 @@ using Application.Utilities;
 using BasicNotification;
 using Domain.Enums;
 using Domain.ProductNS;
+using Domain.UserNS;
 using HardWherePresenter;
 using Microsoft.AspNetCore.SignalR;
 using System.Drawing.Printing;
@@ -220,11 +221,7 @@ namespace Application.Services.ProductServiceNS
             await _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
         }
 
-        private async void NotfiyUsersAboutNewProducts(
-            int userId,
-            string productName,
-            string status
-        )
+        private void NotfiyUsersAboutNewProducts(Product p)
         {
             NotficationDTO notficationDTO = new NotficationDTO();
             notficationDTO.NotficationType = "Product You May Like";
@@ -232,19 +229,25 @@ namespace Application.Services.ProductServiceNS
                 $"Check this new Product that has just been added, be the first one to have it";
             notficationDTO.NotficationTitle = $"We have a new Product for you, Check it Now :)";
 
-            notficationDTO.userId = userId;
-            var notif = await _notficationService.CreateNotfication(notficationDTO);
-            var user = "";
-            try
+            notficationDTO.userId = 0;
+            var users = _productRepository
+                .GetUseresIdToNotfiyByAdminChangeStatusOfProduct(p)
+                .Result;
+            users.ForEach(a =>
             {
-                user = ConnectionMapping<string>._connections[userId.ToString()].LastOrDefault();
-            }
-            catch (Exception ex)
-            {
-                user = "";
-            }
-
-            await _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
+                notficationDTO.userId = a;
+                var notif = _notficationService.CreateNotfication(notficationDTO).Result;
+                var user = "";
+                try
+                {
+                    user = ConnectionMapping<string>._connections[a.ToString()].LastOrDefault();
+                    _hubContext.Clients.Client(user.ToString()).ClientReceiveNotification(notif);
+                }
+                catch (Exception ex)
+                {
+                    user = "";
+                }
+            });
         }
 
         public Task<bool> ChnageProductStatusByAdmin(int productId, string status)
@@ -259,6 +262,10 @@ namespace Application.Services.ProductServiceNS
                 response.Result.Name,
                 status
             );
+            if (status == PrdouctApprovalStatus.APPROVED.ToString())
+            {
+                NotfiyUsersAboutNewProducts(response.Result);
+            }
 
             return Task.FromResult(true);
         }

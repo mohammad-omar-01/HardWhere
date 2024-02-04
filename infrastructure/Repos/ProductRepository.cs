@@ -174,20 +174,24 @@ namespace infrastructure.Repos
         }
 
         public Task<List<int>> GetUseresIdToNotfiyByAdminChangeStatusOfProduct(
-            Product productToChange,
-            string status
+            Product productToChange
         )
         {
-            var usersToNotfiy = _dbContext.UserSearch
+            var usersToNotify = _dbContext.UserSearch
+                .AsEnumerable() // Switch to client evaluation
                 .Where(
                     user =>
                         user.serachKeywords.Any(
-                            keyword => productToChange.Name.ToLower().Contains(keyword.ToLower())
+                            keyword =>
+                                productToChange.Name.IndexOf(
+                                    keyword,
+                                    StringComparison.OrdinalIgnoreCase
+                                ) >= 0
                         )
                 )
                 .Select(a => a.userId)
                 .ToList();
-            return Task.FromResult(usersToNotfiy);
+            return Task.FromResult(usersToNotify);
         }
 
         public Task<Product> ChnageProductStatusByAdmin(int productId, string status)
