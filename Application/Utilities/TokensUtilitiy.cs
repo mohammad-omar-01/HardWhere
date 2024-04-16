@@ -1,4 +1,4 @@
-﻿using Domain.User;
+﻿using Domain.UserNS;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,6 +25,7 @@ namespace Application.Utilities
         {
             var secretKey = _configuration["Authentication:SecretKey"];
             var audience = _configuration["Authentication:Audience"];
+            var issuer = _configuration["Authentication:Issuer"];
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(secretKey);
@@ -36,11 +37,13 @@ namespace Application.Utilities
                     {
                         new Claim(ClaimTypes.Name, user.UserName),
                         new Claim(ClaimTypes.Role, user.Role.ToString()),
+                        new Claim(ClaimTypes.Email, user.Email),
                         new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                     }
                 ),
-                Expires = DateTime.UtcNow.AddHours(6),
+                Expires = DateTime.UtcNow.AddMonths(1),
                 Audience = audience,
+                Issuer = issuer,
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha512
